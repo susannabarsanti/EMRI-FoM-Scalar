@@ -144,7 +144,7 @@ region_hw = 0.03
 
 # LVK constraint values
 A_GW250114 = 6e-3   # GW250114 - quadrupole (n_r = -2)
-A_GW230529 = 6.4e-5   # GW230529 - scalar dipole (n_r = 1)
+A_GW230529 = 6.4e-4   # GW230529 - scalar dipole (n_r = 1)
 
 # Disk constraint at n_r = 8
 A_disk_fEdd = 1.5e-6      # f_Edd = 0.01
@@ -306,11 +306,13 @@ n_r_quad = -2
 n_r_dipole = 1
 n_r_disk = 8
 n_r_disk_gap = 4
+n_r_df = 5.5
 
-ax.axvspan(n_r_disk - region_hw, n_r_disk + region_hw, alpha=0.2, color='purple', zorder=0)
-ax.axvspan(n_r_disk_gap - region_hw, n_r_disk_gap + region_hw, alpha=0.2, color='red', zorder=0)
+ax.axvspan(n_r_disk - region_hw, n_r_disk + region_hw, alpha=0.2, color='red', zorder=0)
+#ax.axvspan(n_r_disk_gap - region_hw, n_r_disk_gap + region_hw, alpha=0.2, color='red', zorder=0)
 ax.axvspan(n_r_dipole - region_hw, n_r_dipole + region_hw, alpha=0.2, color='orange', zorder=0)
 ax.axvspan(n_r_quad - region_hw, n_r_quad + region_hw, alpha=0.2, color='blue', zorder=0)
+ax.axvspan(n_r_df - region_hw, n_r_df + region_hw, alpha=0.2, color='steelblue', zorder=0)
 
 # -----------------------------------------------------------------------------
 # Add constraint markers with annotations
@@ -329,13 +331,13 @@ ax.annotate('GW230529', xy=(n_r_dipole + 0.2, A_GW230529 * 0.3),
 
 ax.plot(n_r_disk, A_disk_fEdd_low, '*', color=cmap(1), markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
-ax.annotate(r'$f_{E}=0.1$', xy=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
+ax.annotate(r'$f_{\rm E}=0.1$', xy=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
             xytext=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
             fontsize=5, color='black', ha='right', va='top')
 
 ax.plot(n_r_disk, A_disk_fEdd, '*', color=cmap(0), markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
-ax.annotate(r'$f_{E}=0.01$', xy=(n_r_disk + 0.05, A_disk_fEdd * 7),
+ax.annotate(r'$f_{\rm E}=0.01$', xy=(n_r_disk + 0.05, A_disk_fEdd * 7),
             xytext=(n_r_disk + 0.05, A_disk_fEdd * 7),
             fontsize=5, color='black', ha='right', va='top')
 
@@ -355,8 +357,8 @@ for m1, m2 in unique_systems:
     )
 
 legend_elements_effects = [
-    Patch(facecolor='purple', alpha=0.3, edgecolor='purple', label=r'Disk'),
-    Patch(facecolor='red', alpha=0.3, edgecolor='red', label=r'Disk (gap)'),
+    Patch(facecolor='red', alpha=0.3, edgecolor='red', label=r'Disk Torques'),
+    Patch(facecolor='steelblue', alpha=0.3, edgecolor='steelblue', label=r'Dark Matter'),
     Patch(facecolor='orange', alpha=0.3, edgecolor='orange', label=r'Scalar charge'),
     Patch(facecolor='blue', alpha=0.3, edgecolor='blue', label=r'Kerr deviation'),
 ]
