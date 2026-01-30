@@ -146,6 +146,10 @@ region_hw = 0.03
 A_GW250114 = 6e-3   # GW250114 - quadrupole (n_r = -2)
 A_GW230529 = 6.4e-4   # GW230529 - scalar dipole (n_r = 1)
 
+# DM constraint at n_r = 5.5
+A_DM_highmass = 1e-5      # rho_DM = 1e17 M_sun/pc^3
+A_DM_lowmass = 1e-8       # rho_DM = 1e16 M_sun/pc^3
+
 # Disk constraint at n_r = 8
 A_disk_fEdd = 1.5e-6      # f_Edd = 0.01
 A_disk_fEdd_low = 1.5e-10 # f_Edd = 0.1
@@ -321,25 +325,37 @@ ax.plot(n_r_quad, A_GW250114, '*', color='blue', markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
 ax.annotate('GW250114', xy=(n_r_quad + 0.4, A_GW250114 * 0.5),
             xytext=(n_r_quad + 0.4, A_GW250114 * 0.5),
-            fontsize=5, color='black', ha='left', va='bottom')
+            fontsize=4, color='black', ha='left', va='bottom')
 
 ax.plot(n_r_dipole, A_GW230529, '*', color='orange', markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
 ax.annotate('GW230529', xy=(n_r_dipole + 0.2, A_GW230529 * 0.3),
             xytext=(n_r_dipole + 0.2, A_GW230529 * 0.3),
-            fontsize=5, color='black', ha='left', va='bottom')
+            fontsize=4, color='black', ha='left', va='bottom')
 
 ax.plot(n_r_disk, A_disk_fEdd_low, '*', color=cmap(1), markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
 ax.annotate(r'$f_{\rm E}=0.1$', xy=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
             xytext=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
-            fontsize=5, color='black', ha='right', va='top')
+            fontsize=4, color='black', ha='right', va='top')
 
 ax.plot(n_r_disk, A_disk_fEdd, '*', color=cmap(0), markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
 ax.annotate(r'$f_{\rm E}=0.01$', xy=(n_r_disk + 0.05, A_disk_fEdd * 7),
             xytext=(n_r_disk + 0.05, A_disk_fEdd * 7),
-            fontsize=5, color='black', ha='right', va='top')
+            fontsize=4, color='black', ha='right', va='top')
+
+ax.plot(n_r_df, A_DM_highmass, '*', color=cmap(0), markersize=7, zorder=10,
+        markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
+ax.annotate(r'$\rho_{\rm DM}=10^{17} \, M_\odot/\mathrm{pc}^3$', xy=(n_r_df + 2.15, A_DM_highmass * 7),
+            xytext=(n_r_df + 2.65, A_DM_highmass * 7),
+            fontsize=4, color='black', ha='right', va='top')
+
+ax.plot(n_r_df, A_DM_lowmass, '*', color=cmap(1), markersize=7, zorder=10,
+        markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
+ax.annotate(r'$\rho_{\rm DM}=10^{16} \, M_\odot/\mathrm{pc}^3$', xy=(n_r_df + 2.15, A_DM_lowmass * 7),
+            xytext=(n_r_df + 2.65, A_DM_lowmass * 7),
+            fontsize=4, color='black', ha='right', va='top')
 
 # -----------------------------------------------------------------------------
 # Create legends
