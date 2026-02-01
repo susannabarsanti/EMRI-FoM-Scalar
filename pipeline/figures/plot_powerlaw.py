@@ -412,25 +412,19 @@ for m1, m2 in unique_systems:
     )
 if include_prx:
     legend_elements_emri.append(Line2D([0], [0], linestyle='-', ms=2, marker='o', color='C5', label=r'$(8 \times 10^5, 40)$'))
-# legend_elements_effects = [
-#     Patch(facecolor='purple', alpha=0.3, edgecolor='purple', label=r'Disk'),
-#     Patch(facecolor='red', alpha=0.3, edgecolor='red', label=r'Disk (gap)'),
-#     Patch(facecolor='orange', alpha=0.3, edgecolor='orange', label=r'Scalar charge'),
-#     Patch(facecolor='blue', alpha=0.3, edgecolor='blue', label=r'Kerr deviation'),
-# ]
-
-legend_elements_effects = [
-    Patch(facecolor='red', alpha=0.3, edgecolor='red', label=r'Disk Torques'),
-    Patch(facecolor='steelblue', alpha=0.3, edgecolor='steelblue', label=r'Dark Matter'),
-    Patch(facecolor='orange', alpha=0.3, edgecolor='orange', label=r'Scalar charge'),
-    Patch(facecolor='blue', alpha=0.3, edgecolor='blue', label=r'Kerr deviation'),
-]
 
 leg1 = ax.legend(handles=legend_elements_emri,
                  loc='lower center', ncols=1,
                  title=r'$(m_1, m_2)$ $[M_\odot]$', frameon=False, framealpha=1.0,
                  fontsize=7, title_fontsize=7)
 ax.add_artist(leg1)
+
+# legend_elements_effects = [
+#     Patch(facecolor='red', alpha=0.3, edgecolor='red', label=r'Disk Torques'),
+#     Patch(facecolor='steelblue', alpha=0.3, edgecolor='steelblue', label=r'Dark Matter'),
+#     Patch(facecolor='orange', alpha=0.3, edgecolor='orange', label=r'Scalar charge'),
+#     Patch(facecolor='blue', alpha=0.3, edgecolor='blue', label=r'Kerr deviation'),
+# ]
 
 # leg2 = ax.legend(handles=legend_elements_effects,
 #                  bbox_to_anchor=(1.0, 1.02), loc='lower right', ncols=1,
@@ -446,7 +440,7 @@ leg1 = ax.legend(handles=legend_elements_effects,
 # ax.add_artist(leg1)
 
 legend_elements_effects = [
-    Patch(facecolor='red', alpha=0.3, edgecolor='red', label=r'Dark Matter'),
+    Patch(facecolor='steelblue', alpha=0.3, edgecolor='steelblue', label=r'Dark Matter'),
     Patch(facecolor='purple', alpha=0.3, edgecolor='purple', label=r'Accretion Disk'),
 ]
 leg2 = ax.legend(handles=legend_elements_effects,
