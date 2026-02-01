@@ -28,7 +28,7 @@ except Exception:
 inference_files_1 = sorted(glob.glob("./../production_inference_m1=1500000.0_m2=75_a=0.99_e_f=0_T=4.5_z=0.5_*/inference.h5"))
 inference_files_2 = sorted(glob.glob("./../production_inference_m1=125000.0_m2=12.5_a=0.99_e_f=0_T=4.5_z=0.25_*/inference.h5"))
 inference_files_3 = sorted(glob.glob("./../production_inference_m1=1500000.0_m2=150_a=0.99_e_f=0_T=4.5_z=0.5_*/inference.h5"))
-inference_files = inference_files_1 + inference_files_2 + inference_files_3
+inference_files = inference_files_2 + inference_files_3 # inference_files_1 + 
 
 print(f"Found {len(inference_files_1)} files for m1=1.5e6, m2=75, z=0.5")
 print(f"Found {len(inference_files_2)} files for m1=1.25e5, m2=12.5, z=0.25")
@@ -238,7 +238,46 @@ for m1, m2 in unique_systems:
 # -----------------------------------------------------------------------------
 # Create plot
 # -----------------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(3.25, 2.4))
+fig, ax = plt.subplots(figsize=(3.25, 3))
+
+
+# -----------------------------------------------------------------------------
+# add PRX plot
+# -----------------------------------------------------------------------------
+include_prx = False
+h5_filename = "all_samples_A_nr_PRX.h5"
+
+# Load arrays from h5py file
+with h5py.File(h5_filename, "r") as h5f:
+        n10 = h5f["n10"][:]
+        n8 = h5f["n8"][:]
+        n5_9 = h5f["n5_9"][:]
+        n4_4 = h5f["n4_4"][:]
+        n3 = h5f["n3"][:]
+        n2 = h5f["n2"][:]
+        n0 = h5f["n0"][:]
+        n1 = h5f["n1"][:]
+        nm1_2 = h5f["nm1_2"][:]
+        nm2 = h5f["nm2"][:]
+        nm2_5 = h5f["nm2_5"][:]
+        nm3 = h5f["nm3"][:]
+        nm4 = h5f["nm4"][:]
+        nm0_25 = h5f["nm0_25"][:]
+        n0_25 = h5f["n0_25"][:]
+
+data = [nm4[:362048,-1],nm3[:362048,-1], 
+        nm2_5[:362048,-1],nm2[:362048,-1],nm1_2[:362048,-1],
+        nm0_25[:362048,-1],
+        n0[:362048,-1],
+        n0_25[:362048,-1],
+        n1[:362048,-1], n2[:362048,-1],n3[:362048,-1],  n4_4[:362048,-1], n5_9[:362048,-1], n8[:362048,-1], n10[:362048,-1], ] # wind beta, wind alpha, min beta, mig alpha
+quantile = np.percentile(data, 84, axis=1)
+nr = np.array([-4.0,-3.0, -2.5,-2.0, -1.2, -0.25,0.0, 0.25, 1.0, 2.0, 3.0, 4.4, 5.9, 8.0, 10.0])
+if include_prx:
+    plt.semilogy(nr, quantile, 'o-', ms=2, color='C5')
+# plt.fill_between(nr, quantile, y2=1e-7, color='C5', alpha=0.3)
+# plt.text(1.5, 1e-6, 'EMRI constraint', color='C5', fontsize=7)
+# -----------------------------------------------------------------------------
 
 all_nr_vals = []
 all_absA_vals = []
@@ -281,8 +320,8 @@ ax.set_xticks(range(min_nr, max_nr + 1))
 ax.set_xlim(min_nr - 0.5, max_nr + 0.5)
 ax.minorticks_off()
 
-ax.set_xlabel(r"$n_r$")
-ax.set_ylabel(r"$\sigma_A$")
+ax.set_xlabel(r"Effect Radial slope $n_r$")
+ax.set_ylabel(r"Constraint on effect $\sigma_A$")
 ax.set_yscale("log")
 
 # Set y-limits (include constraint points)
@@ -305,7 +344,7 @@ ax.grid(True, alpha=0.5)
 n_r_quad = -2
 n_r_dipole = 1
 n_r_disk = 8
-n_r_disk_gap = 4
+n_r_disk_gap = 5.5
 
 ax.axvspan(n_r_disk - region_hw, n_r_disk + region_hw, alpha=0.2, color='purple', zorder=0)
 ax.axvspan(n_r_disk_gap - region_hw, n_r_disk_gap + region_hw, alpha=0.2, color='red', zorder=0)
@@ -319,25 +358,25 @@ ax.plot(n_r_quad, A_GW250114, '*', color='blue', markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
 ax.annotate('GW250114', xy=(n_r_quad + 0.4, A_GW250114 * 0.5),
             xytext=(n_r_quad + 0.4, A_GW250114 * 0.5),
-            fontsize=5, color='black', ha='left', va='bottom')
+            fontsize=6, color='black', ha='left', va='bottom')
 
 ax.plot(n_r_dipole, A_GW230529, '*', color='orange', markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
-ax.annotate('GW230529', xy=(n_r_dipole + 0.2, A_GW230529 * 0.3),
-            xytext=(n_r_dipole + 0.2, A_GW230529 * 0.3),
-            fontsize=5, color='black', ha='left', va='bottom')
+ax.annotate('GW230529', xy=(n_r_dipole + 0.2, A_GW230529 * 0.5),
+            xytext=(n_r_dipole + 0.2, A_GW230529 * 0.5),
+            fontsize=6, color='black', ha='left', va='bottom')
 
-ax.plot(n_r_disk, A_disk_fEdd_low, '*', color=cmap(1), markersize=7, zorder=10,
-        markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
-ax.annotate(r'$f_{E}=0.1$', xy=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
-            xytext=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
-            fontsize=5, color='black', ha='right', va='top')
+# ax.plot(n_r_disk, A_disk_fEdd_low, '*', color=cmap(1), markersize=7, zorder=10,
+#         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
+# ax.annotate(r'$f_{E}=0.1$', xy=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
+#             xytext=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
+#             fontsize=5, color='black', ha='right', va='top')
 
-ax.plot(n_r_disk, A_disk_fEdd, '*', color=cmap(0), markersize=7, zorder=10,
-        markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
-ax.annotate(r'$f_{E}=0.01$', xy=(n_r_disk + 0.05, A_disk_fEdd * 7),
-            xytext=(n_r_disk + 0.05, A_disk_fEdd * 7),
-            fontsize=5, color='black', ha='right', va='top')
+# ax.plot(n_r_disk, A_disk_fEdd, '*', color=cmap(0), markersize=7, zorder=10,
+#         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
+# ax.annotate(r'$f_{E}=0.01$', xy=(n_r_disk + 0.05, A_disk_fEdd * 7),
+#             xytext=(n_r_disk + 0.05, A_disk_fEdd * 7),
+#             fontsize=5, color='black', ha='right', va='top')
 
 # -----------------------------------------------------------------------------
 # Create legends
@@ -353,24 +392,42 @@ for m1, m2 in unique_systems:
                color=style['color'],
                alpha=1.0)
     )
-
-legend_elements_effects = [
-    Patch(facecolor='purple', alpha=0.3, edgecolor='purple', label=r'Disk'),
-    Patch(facecolor='red', alpha=0.3, edgecolor='red', label=r'Disk (gap)'),
-    Patch(facecolor='orange', alpha=0.3, edgecolor='orange', label=r'Scalar charge'),
-    Patch(facecolor='blue', alpha=0.3, edgecolor='blue', label=r'Kerr deviation'),
-]
+if include_prx:
+    legend_elements_emri.append(Line2D([0], [0], linestyle='-', ms=2, marker='o', color='C5', label=r'$(8 \times 10^5, 40)$'))
+# legend_elements_effects = [
+#     Patch(facecolor='purple', alpha=0.3, edgecolor='purple', label=r'Disk'),
+#     Patch(facecolor='red', alpha=0.3, edgecolor='red', label=r'Disk (gap)'),
+#     Patch(facecolor='orange', alpha=0.3, edgecolor='orange', label=r'Scalar charge'),
+#     Patch(facecolor='blue', alpha=0.3, edgecolor='blue', label=r'Kerr deviation'),
+# ]
 
 leg1 = ax.legend(handles=legend_elements_emri,
-                 bbox_to_anchor=(0.0, 1.02), loc='lower left', ncols=1,
-                 title=r'$(m_1, m_2)$ $[M_\odot]$', frameon=False,
+                 loc='lower center', ncols=1,
+                 title=r'$(m_1, m_2)$ $[M_\odot]$', frameon=False, framealpha=1.0,
                  fontsize=7, title_fontsize=7)
 ax.add_artist(leg1)
 
-leg2 = ax.legend(handles=legend_elements_effects,
-                 bbox_to_anchor=(1.0, 1.02), loc='lower right', ncols=1,
-                 frameon=False, fontsize=7, title_fontsize=7)
+# leg2 = ax.legend(handles=legend_elements_effects,
+#                  bbox_to_anchor=(1.0, 1.02), loc='lower right', ncols=1,
+#                  frameon=False, fontsize=7, title_fontsize=7)
 
+legend_elements_effects = [
+    Patch(facecolor='blue', alpha=0.3, edgecolor='blue', label=r'Kerr Deviation'),
+    Patch(facecolor='orange', alpha=0.3, edgecolor='orange', label=r'Scalar Charge'),
+]
+leg1 = ax.legend(handles=legend_elements_effects,
+                 bbox_to_anchor=(0.4, 1.00), loc='lower right', ncols=1,
+                 frameon=False, fontsize=8, title_fontsize=8, title='Beyond GR effects')
+# ax.add_artist(leg1)
+
+legend_elements_effects = [
+    Patch(facecolor='red', alpha=0.3, edgecolor='red', label=r'Dark Matter'),
+    Patch(facecolor='purple', alpha=0.3, edgecolor='purple', label=r'Accretion Disk'),
+]
+leg2 = ax.legend(handles=legend_elements_effects,
+                 bbox_to_anchor=(1., 1.00), loc='lower right', ncols=1,
+                 frameon=False, fontsize=8, title_fontsize=8, title='Environmental effects')
+ax.add_artist(leg1)
 plt.tight_layout()
-plt.savefig("nr_amplitude_precision_constraints.pdf", dpi=400, bbox_inches='tight')
-print("Plot saved: nr_amplitude_precision_constraints.pdf")
+plt.savefig(f"nr_amplitude_precision_constraints_prx{include_prx}.png", dpi=300, bbox_inches='tight')
+print(f"Plot saved: nr_amplitude_precision_constraints_prx{include_prx}.png")
