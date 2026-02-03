@@ -242,7 +242,7 @@ for m1, m2 in unique_systems:
 # -----------------------------------------------------------------------------
 # Create plot
 # -----------------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(3.25, 3))
+fig, ax = plt.subplots(figsize=(3.25, 4))
 
 
 # -----------------------------------------------------------------------------
@@ -335,6 +335,14 @@ y_max = max(finite_absA + [A_GW230529, A_GW250114, A_disk_fEdd, A_disk_fEdd_low]
 ax.set_ylim(y_min, y_max)
 
 # -----------------------------------------------------------------------------
+# Plot requirement line
+# -----------------------------------------------------------------------------
+requirement = 1.4 * np.max(np.stack([np.asarray(all_absA_vals)[:4], np.asarray(all_absA_vals)[4:]]),axis=0)
+ax.plot(nr_vals, requirement, 'r:', lw=1, label='Requirement')
+ax.annotate('Requirement', xy=(nr_vals[len(nr_vals)//2], requirement[len(nr_vals)//2]*2.5),
+            xytext=(nr_vals[len(nr_vals)//2], requirement[len(nr_vals)//2]*2.5),
+            fontsize=7, color='red', ha='center', va='bottom')
+# -----------------------------------------------------------------------------
 # Set y-axis to show each power of 10
 # -----------------------------------------------------------------------------
 ax.yaxis.set_major_locator(LogLocator(base=10, numticks=20))
@@ -351,7 +359,7 @@ n_r_disk = 8
 n_r_disk_gap = 4
 n_r_df = 5.5
 
-ax.axvspan(n_r_disk - region_hw, n_r_disk + region_hw, alpha=0.2, color='red', zorder=0)
+ax.axvspan(n_r_disk - region_hw, n_r_disk + region_hw, alpha=0.2, color='purple', zorder=0)
 #ax.axvspan(n_r_disk_gap - region_hw, n_r_disk_gap + region_hw, alpha=0.2, color='red', zorder=0)
 ax.axvspan(n_r_dipole - region_hw, n_r_dipole + region_hw, alpha=0.2, color='orange', zorder=0)
 ax.axvspan(n_r_quad - region_hw, n_r_quad + region_hw, alpha=0.2, color='blue', zorder=0)
@@ -364,38 +372,53 @@ ax.plot(n_r_quad, A_GW250114, '*', color='blue', markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
 ax.annotate('GW250114', xy=(n_r_quad + 0.4, A_GW250114 * 0.5),
             xytext=(n_r_quad + 0.4, A_GW250114 * 0.5),
-            fontsize=4, color='black', ha='left', va='bottom')
+            fontsize=7, color='black', ha='left', va='bottom')
 
 ax.plot(n_r_dipole, A_GW230529, '*', color='orange', markersize=7, zorder=10,
         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
 ax.annotate('GW230529', xy=(n_r_dipole + 0.2, A_GW230529 * 0.3),
             xytext=(n_r_dipole + 0.2, A_GW230529 * 0.3),
-            fontsize=4, color='black', ha='left', va='bottom')
+            fontsize=7, color='black', ha='left', va='bottom')
 
-ax.plot(n_r_disk, A_disk_fEdd_low, '*', color=cmap(1), markersize=7, zorder=10,
-        markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
-ax.annotate(r'$f_{\rm E}=0.1$', xy=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
-            xytext=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
-            fontsize=4, color='black', ha='right', va='top')
+# ax.plot(n_r_disk, A_disk_fEdd_low, '*', color=cmap(1), markersize=7, zorder=10,
+#         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
+# ax.annotate(r'$f_{\rm E}=0.1$', xy=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
+#             xytext=(n_r_disk + 0.05, A_disk_fEdd_low * 7),
+#             fontsize=4, color='black', ha='right', va='top')
 
-ax.plot(n_r_disk, A_disk_fEdd, '*', color=cmap(0), markersize=7, zorder=10,
-        markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
-ax.annotate(r'$f_{\rm E}=0.01$', xy=(n_r_disk + 0.05, A_disk_fEdd * 7),
-            xytext=(n_r_disk + 0.05, A_disk_fEdd * 7),
-            fontsize=4, color='black', ha='right', va='top')
+# ax.plot(n_r_disk, A_disk_fEdd, '*', color=cmap(0), markersize=7, zorder=10,
+#         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
+# ax.annotate(r'$f_{\rm E}=0.01$', xy=(n_r_disk + 0.05, A_disk_fEdd * 7),
+#             xytext=(n_r_disk + 0.05, A_disk_fEdd * 7),
+#             fontsize=4, color='black', ha='right', va='top')
 
-ax.plot(n_r_df, A_DM_highmass, '*', color=cmap(0), markersize=7, zorder=10,
-        markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
-ax.annotate(r'$\rho_{\rm DM}=10^{17} \, M_\odot/\mathrm{pc}^3$', xy=(n_r_df + 2.15, A_DM_highmass * 7),
-            xytext=(n_r_df + 2.65, A_DM_highmass * 7),
-            fontsize=4, color='black', ha='right', va='top')
+# ax.plot(n_r_df, A_DM_highmass, '*', color=cmap(0), markersize=7, zorder=10,
+#         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
+# ax.annotate(r'$\rho_{\rm DM}=10^{17} \, M_\odot/\mathrm{pc}^3$', xy=(n_r_df + 2.15, A_DM_highmass * 7),
+#             xytext=(n_r_df + 2.65, A_DM_highmass * 7),
+#             fontsize=4, color='black', ha='right', va='top')
 
-ax.plot(n_r_df, A_DM_lowmass, '*', color=cmap(1), markersize=7, zorder=10,
-        markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
-ax.annotate(r'$\rho_{\rm DM}=10^{16} \, M_\odot/\mathrm{pc}^3$', xy=(n_r_df + 2.15, A_DM_lowmass * 7),
-            xytext=(n_r_df + 2.65, A_DM_lowmass * 7),
-            fontsize=4, color='black', ha='right', va='top')
+# ax.plot(n_r_df, A_DM_lowmass, '*', color=cmap(1), markersize=7, zorder=10,
+#         markeredgecolor='white', markeredgewidth=0.3, alpha=0.7)
+# ax.annotate(r'$\rho_{\rm DM}=10^{16} \, M_\odot/\mathrm{pc}^3$', xy=(n_r_df + 2.15, A_DM_lowmass * 7),
+#             xytext=(n_r_df + 2.65, A_DM_lowmass * 7),
+#             fontsize=4, color='black', ha='right', va='top')
 
+# -----------------------------------------------------------------------------
+# Susi's points
+# -----------------------------------------------------------------------------
+# \sus{My dots are:\\
+# -$(10^6,100)$: $\sigma_A
+# =5.57{}^{+3.24}_{-2.01}\times10^{-6}$\\
+# -$(10^6,10)$: $\sigma_A
+# =5.48{}^{+3.24}_{-1.92}\times10^{-6}$\\
+# -$(10^5,10)$: $\sigma_A
+# =1.59{}^{+0.85}_{-0.56}\times10^{-6}$}
+ax.errorbar([0.8], [5.57e-6], yerr=[[5.57e-6-2.01e-6], [5.57e-6+3.24e-6]], fmt='x', color=styles[(1000000.0, 100.0)]['color'], markersize=5, zorder=10, alpha=0.7)
+ax.errorbar([0.8], [1.59e-6], yerr=[[1.59e-6-0.56e-6], [1.59e-6+0.85e-6]], fmt='x', color=styles[(100000.0, 10.0)]['color'], markersize=5, label='Full model', zorder=10, alpha=0.7)
+# arrow to relativistic model
+ax.annotate('', xy=(0.7, 0.3e-5), xytext=(-1, 0.4e-6), arrowprops=dict(arrowstyle='->', color='black', lw=0.8))
+ax.annotate('Relativistic \n Model $\\times$', xy=(0.7, 1e-5),xytext=(-0.5, 1e-7),fontsize=6, color='black', ha='center', va='bottom')
 # -----------------------------------------------------------------------------
 # Create legends
 # -----------------------------------------------------------------------------
@@ -412,6 +435,8 @@ for m1, m2 in unique_systems:
     )
 if include_prx:
     legend_elements_emri.append(Line2D([0], [0], linestyle='-', ms=2, marker='o', color='C5', label=r'$(8 \times 10^5, 40)$'))
+
+# legend_elements_emri.append(Line2D([0], [0], linestyle='-', ms=2, marker='P', color='grey', label=r'Relativistic Model'))
 
 leg1 = ax.legend(handles=legend_elements_emri,
                  loc='lower center', ncols=1,
