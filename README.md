@@ -1,5 +1,17 @@
+---
+title: EMRI-FoM
+emoji: 🔭
+colorFrom: indigo
+colorTo: purple
+sdk: gradio
+sdk_version: "5.0.0"
+app_file: app.py
+pinned: false
+license: mit
+---
 # LISA EMRI/IMRI Figures of Merit
 
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/lorenzsp/emri-imri-fom)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lorenzsp/EMRI-FoM/main?filepath=pipeline/degradation_analysis.ipynb)
 
 ## Overview
