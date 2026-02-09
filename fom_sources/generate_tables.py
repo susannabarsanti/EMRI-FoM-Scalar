@@ -33,17 +33,17 @@ def create_latex_table(data, caption, label):
     lines.append(r"\label{" + label + r"}")
     lines.append(r"\begin{tabular}{cccccc}")
     lines.append(r"\hline")
-    lines.append(r"$M$ & $\mu$ & $a$ & $e_f$ & $T$ & $z$ \\")
+    lines.append(r"$m_{1,\mathrm{det}} [M_\odot]$ & $m_{2,\mathrm{det}} [M_\odot]$ & $a$ & $e_f$ & $T$ [year] & $z$ \\")
     lines.append(r"\hline")
     
     for entry in data:
         # Format numbers appropriately
-        M_str = f"{entry['M']:.2e}" if entry['M'] >= 1000 else f"{entry['M']:.2f}"
-        mu_str = f"{entry['mu']:.2e}" if entry['mu'] >= 1000 else f"{entry['mu']:.2f}"
+        M_str = f"{entry['M']:.6e}"# if entry['M'] >= 1000 else f"{entry['M']:.2f}"
+        mu_str = f"{entry['mu']:.6e}"# if entry['mu'] >= 1000 else f"{entry['mu']:.2f}"
         a_str = f"{entry['a']:.2f}"
         ef_str = f"{entry['e_f']:.2f}"
         T_str = f"{entry['T']:.2f}"
-        z_str = f"{entry['z']:.4f}"
+        z_str = f"{entry['z']:.3f}"
         
         lines.append(f"{M_str} & {mu_str} & {a_str} & {ef_str} & {T_str} & {z_str} \\\\")
     
