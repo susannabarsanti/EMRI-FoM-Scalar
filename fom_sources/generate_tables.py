@@ -43,7 +43,7 @@ def create_latex_table(data, caption, label):
         a_str = f"{entry['a']:.2f}"
         ef_str = f"{entry['e_f']:.2f}"
         T_str = f"{entry['T']:.2f}"
-        z_str = f"{entry['z']:.3f}"
+        z_str = f"{entry['z']:.6e}"
         
         lines.append(f"{M_str} & {mu_str} & {a_str} & {ef_str} & {T_str} & {z_str} \\\\")
     
@@ -69,6 +69,10 @@ def main():
     latex_doc.append(r"\usepackage{longtable}")
     latex_doc.append(r"\usepackage{geometry}")
     latex_doc.append(r"\geometry{margin=1in}")
+    # add packages for math and formatting
+    latex_doc.append(r"\usepackage{amsmath}")
+    latex_doc.append(r"\usepackage{amssymb}")
+    
     latex_doc.append(r"")
     latex_doc.append(r"\begin{document}")
     latex_doc.append(r"")
@@ -112,13 +116,35 @@ def main():
         latex_doc.append(r"")
         latex_doc.append(r"\clearpage")
         latex_doc.append(r"")
+    
+    # Append computational cost table at the end
+    computational_table = r"""
+    \begin{table}
+    \centering
+    \begin{tabular}{lcc}
+    \hline
+    Metric & Detection & Inference \\
+    \hline
+    Number of Systems & 580 & 216 \\
+    Total runtime [days] & 1.93 & 8.87 \\
+    Median runtime [minutes] & 4 & 33 \\
+    Minimum runtime[minutes] & 2 & 4.6 \\
+    Maximum runtime [minutes] & 10.4 & 377 \\
+    \hline
+    \end{tabular}
+    \caption{Table of computational cost of the figures of merit for the detection and inference analyses. 
+    Each system is referred as a unique combination of primary mass, secondary mass, primary spin, final eccentricity, time to plunge and redshift $(m_1, m_2, a, e_f, T, z)$ for which $10^3$ Monte Carlo realizations of sky position, spin orientation and initial phases are performed to obtain the median SNR (Detection) and parameter uncertainties (Inference).
+    The runtime is measured on an NVIDIA A100 GPU with 41 GBs of memory.}
+    \label{tab:timings}
+    \end{table}
+    """
+    latex_doc.append(computational_table)
     latex_doc.append(r"\end{document}")
-
     # Write to file
     output_filename = 'source_tables.tex'
     with open(output_filename, 'w') as f:
         f.write('\n'.join(latex_doc))
-
+    
     print(f"LaTeX document created: {output_filename}")
     print(f"Detection SNR sources: {len(snr_data)} entries")
     print(f"Inference sources (e_f=0.0): {len(inference_ef0)} entries")
