@@ -221,15 +221,15 @@ for obs_type, (masses, zs, color, marker, ms, alpha) in obs_data.items():
 
 # Legend for observations
 legend_elements_obs = [
-    Line2D([0], [0], marker='D', label='QPEs and QPOs', alpha=0.5, markerfacecolor='purple', markersize=6, linestyle='None', color='purple'),
-    Line2D([0], [0], marker='X', label='AGNs', alpha=0.5, markerfacecolor='k', markersize=8, linestyle='None', color='k'),
+    Line2D([0], [0], marker='D', label='QPE and QPO', alpha=0.5, markerfacecolor='purple', markersize=6, linestyle='None', color='purple'),
+    Line2D([0], [0], marker='X', label='AGN', alpha=0.5, markerfacecolor='k', markersize=8, linestyle='None', color='k'),
     Line2D([0], [0], marker='.', label='SDSS Quasars', alpha=0.1, markerfacecolor='blue', markersize=8, linestyle='None', color='blue'),
 ]
-leg_obs = ax.legend(handles=legend_elements_obs, frameon=True, bbox_to_anchor=(0.5, 0.0), loc='center', ncol=3, fontsize=8)
+leg_obs = ax.legend(handles=legend_elements_obs, frameon=True, bbox_to_anchor=(0.5, -0.1), loc='center', ncol=3, fontsize=8)
 ax.add_artist(leg_obs)
 
 ax.set_rlabel_position(90)
-ax.text(np.pi/2, ax.get_ylim()[1] * 1.3, 'Redshift horizon', ha='center', va='bottom')
+ax.text(np.pi/2, ax.get_ylim()[1] * 1.3, 'Redshift horizon for $m_1 [M_\odot]$', ha='center', va='bottom')
 ax.set_rscale('log')
 
 # Set radial ticks for redshift
@@ -255,10 +255,10 @@ ax.set_thetagrids([0, 90, 180, 270], labels=['', '', '', ''])
 angles = [45, 135, 225, 315]
 angles_rad = [np.deg2rad(a) for a in angles]
 labels = [
-    r'$m_1 = 5\times10^4M_\odot$',
-    r'$m_1 = 10^5M_\odot$',
-    r'$m_1 = 10^6M_\odot$',
-    r'$m_1 =  10^7M_\odot$'
+    r'$5\times10^4$',
+    r'$10^5$',
+    r'$10^6$',
+    r'$10^7$'
 ]
 # Place the labels at a radius just above the max plotted redshift
 r_label = ax.get_ylim()[1] * 1.15
@@ -268,9 +268,12 @@ for angle, label in zip(angles_rad, labels):
 # Legend
 legend_elements_m2 = [Line2D([0], [0], marker=None, label=f'{m2:.0f}', linestyle='-', linewidth=2, color=colors[idx]) 
                       for idx, m2 in enumerate(sorted(z_data.keys())) if (m2_filter == 'all' or m2 == m2_filter)]
-ax.legend(handles=legend_elements_m2, bbox_to_anchor=(0.5, 1.05), loc='lower center', ncols=4, title=r'Secondary mass $m_2 [M_\odot]$')
+# place main legend below the plot
+ax.legend(handles=legend_elements_m2, bbox_to_anchor=(0.5, -0.15), loc='upper center', ncols=4, title=r'Secondary mass $m_2 [M_\odot]$')
 
-plt.tight_layout()
+# plt.tight_layout()
+# ensure there is room for the legend below the figure
+plt.subplots_adjust(bottom=0.18)
 output_filename = f'redshift_horizon_polar_a_{spin_a}_tpl_{tpl_val}.png'
-plt.savefig(os.path.join(script_dir, output_filename), dpi=400)
+plt.savefig(os.path.join(script_dir, output_filename), dpi=400, bbox_inches='tight')
 print(f"Polar plot saved: figures/{output_filename}")

@@ -220,7 +220,7 @@ def format_mass_pair(m1, m2):
 # -----------------------------------------------------------------------------
 # Create plot
 # -----------------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(3.25, 2*1.7))
+fig, ax = plt.subplots(figsize=(3.25/1.2, 2*1.7/1.2))
 
 # -----------------------------------------------------------------------------
 # Define the 4 effects with their n_r values and colors
@@ -287,8 +287,8 @@ for i, name in enumerate(effect_names):
         ax.scatter(x_positions[i], lvk_val, marker='v', s=50, c=color, zorder=10,
                    edgecolors='white', linewidths=0.5)
         
-        ax.annotate(label, xy=(x_positions[i] + 0.15, lvk_val),
-                    xytext=(x_positions[i] + 0.15, lvk_val),
+        ax.annotate(label, xy=(x_positions[i]-0.35, lvk_val*1.4),
+                    xytext=(x_positions[i]-0.35, lvk_val*1.4),
                     fontsize=7, color='black', ha='left', va='bottom')
 
 # -----------------------------------------------------------------------------
@@ -296,6 +296,9 @@ for i, name in enumerate(effect_names):
 # -----------------------------------------------------------------------------
 ax.set_xticks(x_positions)
 ax.set_xticklabels(effect_names, fontsize=8)
+# Color each x-tick label with the corresponding effect color
+for i, (label, name) in enumerate(zip(ax.get_xticklabels(), effect_names)):
+    label.set_color(effects[name]['color'])
 ax.set_xlim(-0.5, len(effect_names) - 0.5)
 
 ax.set_ylabel(r"Deviation from GW emission")
@@ -308,11 +311,11 @@ ax.set_yscale("log")
 trans = ax.get_xaxis_transform()
 
 # "GR modifications" centered below Kerr Deviation and Scalar Charge (positions 0 and 1)
-ax.text(0.5, -0.15, "General Relativity \n Modifications", transform=trans, ha='center', va='top', 
+ax.text(0.5, -0.2, "General Relativity \n Modifications", transform=trans, ha='center', va='top', 
         fontsize=8, fontstyle='italic')
 
 # "Environmental Effects" centered below Dark Matter and Accretion Disk (positions 2 and 3)
-ax.text(2.5, -0.15, "Environmental \n Effects", transform=trans, ha='center', va='top', 
+ax.text(2.5, -0.2, "Environmental \n Effects", transform=trans, ha='center', va='top', 
         fontsize=8, fontstyle='italic')
 
 # Add subtle separating line between the two categories
