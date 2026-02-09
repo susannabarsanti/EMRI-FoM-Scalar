@@ -278,6 +278,81 @@ def generate_pe_sources(test_mode=False, repo_root="inference_"):
     return sources
 
 
+def generate_m1_sources(test_mode=False, repo_root="M1_inference_"):
+    """
+    Generate source parameters for parameter estimation (Fisher matrix)
+    from the M1 catalog (M1_catalog.json).
+    """
+    Nmonte = 1 if test_mode else 1000
+    dev = 0
+    channels = 'AE'
+    include_foreground = True
+    esaorbits = True
+    tdi2 = True
+
+    sources = []
+
+    with open("M1_catalog.json", "r") as f:
+        catalog = json.load(f)
+
+    for key, params in catalog.items():
+        m1 = params["m1"]
+        m2 = params["m2"]
+        a = params["a"]
+        z = params["redshift"]
+        ef = params["e_f"]
+        Tobs = params["Tpl"]
+        dt = params["dt"]
+
+        print(f"Generating M1 PE source for {key} with e_f={ef}, Tobs={Tobs}, z={z}")
+
+        psd_file = "TDI2_AE_psd_emri_background_1.5_yr.npy"
+
+        psd_name = psd_file.replace('.npy', '')
+        source_name = (
+            repo_root + key + '/'
+            + f"m1={m1}_m2={m2}_a={a}_e_f={ef}_T={Tobs}_z={z}_{psd_name}"
+        )
+
+        # Build extra_args
+        extra_args = ""
+        if include_foreground:
+            extra_args += " --foreground"
+        if esaorbits:
+            extra_args += " --esaorbits"
+        if tdi2:
+            extra_args += " --tdi2"
+
+        sources.append({
+            "M": m1 * (1 + z),
+            "mu": m2 * (1 + z),
+            "a": a,
+            "e_f": ef,
+            "T": Tobs,
+            "z": z,
+            "repo": source_name,
+            "psd_file": psd_file,
+            "channels": channels,
+            "dt": dt,
+            "N_montecarlo": Nmonte,
+            "device": dev,
+            "pe": 1,
+            "extra_args": extra_args.strip(),
+        })
+
+    if test_mode:
+        sources = sources[:1]
+
+    # Save sources to file
+    sources_file = repo_root + "sources_m1.txt"
+    with open(sources_file, "w") as f:
+        for source in sources:
+            f.write(f"{source}\n")
+
+    print(f"Generated {len(sources)} M1 PE sources")
+    return sources
+
+
 # ============================================================================
 # MAIN
 # ============================================================================
@@ -294,13 +369,16 @@ Examples:
   # Submit PE calculation jobs (test mode)
   python submit_so3.py --mode pe --test
   
+  # Submit M1 catalog PE jobs
+  python submit_so3.py --mode m1
+  
   # Check current queue status
   python submit_so3.py --check-queue
         """
     )
     
-    parser.add_argument("--mode", choices=["snr", "pe"], 
-                       help="Pipeline mode: 'snr' for SNR calculations, 'pe' for parameter estimation")
+    parser.add_argument("--mode", choices=["snr", "pe", "m1"], 
+                       help="Pipeline mode: 'snr' for SNR calculations, 'pe' for parameter estimation, 'm1' for M1 catalog PE")
     parser.add_argument("--test", action="store_true", 
                        help="Run in test mode (1 source, 1 Monte Carlo)")
     parser.add_argument("--partition", type=str, default="gpu_a100_22c",
@@ -339,9 +417,12 @@ Examples:
     if args.mode == "snr":
         repo_root = "test_snr_" if args.test else "snr_"
         sources = generate_snr_sources(test_mode=args.test, repo_root=repo_root)
-    else:  # pe mode
+    elif args.mode == "pe":
         repo_root = "test_pe_" if args.test else "inference_"
         sources = generate_pe_sources(test_mode=args.test, repo_root=repo_root)
+    else:  # m1 mode
+        repo_root = "test_M1_inference_" if args.test else "M1_inference_"
+        sources = generate_m1_sources(test_mode=args.test, repo_root=repo_root)
     
     print(f"\nSubmitting {len(sources)} jobs in {args.mode} mode...")
     print(f"Partition: {args.partition}")
