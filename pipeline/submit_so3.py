@@ -341,7 +341,7 @@ def generate_m1_sources(test_mode=False, repo_root="M1_inference_"):
         })
 
     if test_mode:
-        sources = sources[:1]
+        sources = sources[-1:]
 
     # Save sources to file
     sources_file = repo_root + "sources_m1.txt"
