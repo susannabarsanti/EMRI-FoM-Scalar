@@ -158,6 +158,14 @@ print(f"Loaded metadata for {len(inference_metadata)} sources")
 # -----------------------------------------------------------------------------
 def format_sigfigs(v, n=2):
     """Format value with n significant figures, avoiding scientific notation when possible."""
+    if v == 1.0:
+        return "1"
+    if v == 5.0:
+        return "5"
+    if v == 10.0:
+        return "10"
+    if v == 50.0:
+        return "50"
     if v == 0:
         return '0'
     magnitude = floor(log10(abs(v)))
@@ -235,7 +243,7 @@ for precision_metric in list(ylabel_map.keys()):
     colors = plt.cm.tab20(np.linspace(0, 1, max(num_m2, 1)))
     m2_color_dict = {m2: colors[idx] for idx, m2 in enumerate(m2_list)}
 
-    theta_rot = -np.pi / (2 * num_m1)  # Small rotation for aesthetics
+    theta_rot = 0.0#-np.pi / (2 * num_m1)  # Small rotation for aesthetics
 
     for idx, m2 in enumerate(m2_list):
         m1_vals = np.array(precision_by_m2[m2]['m1'])
@@ -285,8 +293,10 @@ for precision_metric in list(ylabel_map.keys()):
     ax.spines['polar'].set_visible(False)
 
     # Set theta ticks at sector midpoints with m1 labels
-    theta_grids_deg = [(i + 0.5) * (360 / num_m1) + np.rad2deg(theta_rot) for i in range(num_m1)]
+    theta_grids_deg = [(i + 0.0) * (360 / num_m1) + np.rad2deg(theta_rot) for i in range(num_m1)]
     ax.set_thetagrids(theta_grids_deg, labels=[''] * num_m1)
+    # change for label
+    theta_grids_deg = [(i + 0.5) * (360 / num_m1) + np.rad2deg(theta_rot) for i in range(num_m1)]
 
     # Add custom m1 labels
     r_label = ax.get_ylim()[1] * 1.3
@@ -308,7 +318,7 @@ for precision_metric in list(ylabel_map.keys()):
                linestyle='-', linewidth=2, color=m2_color_dict[m2])
         for m2 in m2_list
     ]
-    ax.legend(handles=legend_elements_m2, bbox_to_anchor=(0.5, -0.15),
+    ax.legend(handles=legend_elements_m2, bbox_to_anchor=(0.5, -0.05),
               loc='upper center', ncols=min(num_m2, 4),
               title=r'Secondary mass $m_2\;[M_\odot]$')
 
