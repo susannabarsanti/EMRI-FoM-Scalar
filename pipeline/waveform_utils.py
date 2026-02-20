@@ -37,8 +37,8 @@ class wave_windowed_truncated():
         N = round(wave_gen.Tobs * YRSID_SI / wave_gen.dt)
         N_0 = round(t0 / wave_gen.dt)
         print("Creating windowed truncated waveform with N =", N, "and response truncation N_0 =", N_0)
-        # taper_duration = 86400.0 * 1 # one day
-        taper_duration = 1 * 3600.0 # one hour
+        taper_duration = 86400.0 * 1 # one day
+        # taper_duration = 1 * 3600.0 # one hour
         taper_length = round(taper_duration / wave_gen.dt)
         hann = np.hanning(2*taper_length)
         
