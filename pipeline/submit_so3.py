@@ -421,7 +421,7 @@ Examples:
         repo_root = "test_pe_" if args.test else "inference_"
         sources = generate_pe_sources(test_mode=args.test, repo_root=repo_root)
     else:  # m1 mode
-        repo_root = "test_M1_inference_" if args.test else "M1_inference_"
+        repo_root = "test_M1_inference_" if args.test else "M1_inferenceNew1h_" #"M1_inference_"
         sources = generate_m1_sources(test_mode=args.test, repo_root=repo_root)
     
     print(f"\nSubmitting {len(sources)} jobs in {args.mode} mode...")

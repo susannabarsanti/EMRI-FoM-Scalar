@@ -80,7 +80,7 @@ Examples:
     
     for job_type, script_name in [('snr', 'postprocess_snr.py'), 
                                    ('inference', 'postprocess_inference.py'),
-                                   ('M1_inference', 'postprocess_inference.py')
+                                   ('M1_inferenceNew1h', 'postprocess_inference.py')
                                    ]:
         subparser = subparsers.add_parser(job_type, help=f'Submit {job_type} postprocessing jobs')
         subparser.add_argument("--num-jobs", type=int, default=58,
