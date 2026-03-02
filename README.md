@@ -1,5 +1,6 @@
 # LISA EMRI/IMRI Figures of Merit
 
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Spaces-blue)](https://huggingface.co/spaces/lorenzsp/emri-imri-fom)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lorenzsp/EMRI-FoM/main?filepath=pipeline/degradation_analysis.ipynb)
 
 ## Overview
