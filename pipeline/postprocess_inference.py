@@ -29,7 +29,7 @@ if __name__ == "__main__":
         len_realizations = len(sorted(glob.glob(f"{fold}/*/results.npz")))
         if len_realizations != 1000:
             print(f"Incomplete data in {fold}, found {len_realizations} realizations. Skipping.")
-            continue  # skip incomplete data
+            # continue  # skip incomplete data
         e_f = float(np.load(sorted(glob.glob(f"{fold}/*/snr.npz"))[0])["e_f"])
         param_names = np.array(np.load(sorted(glob.glob(f"{fold}/*/results.npz"))[0])["names"],dtype='str')
         
