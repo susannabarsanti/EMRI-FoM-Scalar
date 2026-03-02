@@ -321,7 +321,6 @@ if __name__ == "__main__":
         ratio = (sigma_msource_values[i, :] / msource) / (sigma_m / m_det)
         plt.plot(sigma_l_values / l, ratio, label=f'sigma_m/m_det={sigma_m/m_det:.1e}')
     plt.xscale('log')
-    plt.xscale('log')
     plt.yscale('log')
     plt.xlabel('Relative uncertainty in luminosity distance')
     plt.ylabel('Ratio of relative precision (source/detector)')
@@ -330,7 +329,8 @@ if __name__ == "__main__":
     plt.title('Ratio of relative precision')
 
     plt.tight_layout()
-    plt.savefig('uncertainty_msource.png')   
+    plt.savefig('uncertainty_msource.png')
+    
     # plot asymptotic slot for different redshifts
     z_ = np.logspace(-3, 1)
     l_ = cosmo.get_luminosity_distance(z)
@@ -343,7 +343,6 @@ if __name__ == "__main__":
     # plt.show()
     
     
-
     galaxies = {
     # Local Group
     "Andromeda (M31)": (0.00044, 0.78, 1.1e8),  # Bender et al. 2005
