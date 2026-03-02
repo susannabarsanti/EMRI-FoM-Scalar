@@ -242,7 +242,7 @@ cmap_discrete = ListedColormap(colors)
 # PLOT 1: Time-Frequency Space
 # -----------------------------------------------------------------------------
 print("\nGenerating time-frequency plot...")
-fig1 = plt.figure(figsize=(3.25, 2*1.5))
+fig1 = plt.figure(figsize=(3.25*2, 2*1.5))
 
 sm = cm.ScalarMappable(cmap=cmap_discrete, norm=plt.Normalize(vmin=0, vmax=len(m1_values_unique) - 1))
 sm.set_array([])
@@ -323,7 +323,7 @@ for key, values in store_results.items():
     linestyle = '-' if a > 0 else '--'
     
     if (Tpl == 0.25)and(e_f == 0.01):
-        plt.plot(frequency_gw_2phi, e_back, linestyle, color=color, alpha=0.7, linewidth=2)
+        plt.plot(frequency_gw_2phi, e_back, linestyle, color=color, alpha=0.9, linewidth=2)
     
     # # Add markers for starting points
     # if a > 0.0:
@@ -363,7 +363,7 @@ print("Saved: figures/emri_trajectories_frequency_eccentricity.png")
 # -----------------------------------------------------------------------------
 print("\nGenerating combined time-frequency and frequency-eccentricity plot...")
 
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(3.25*2, 2*1.1), sharey=True)
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(3.25*2.1, 2*1.1), sharey=True)
 
 sm = cm.ScalarMappable(cmap=cmap_discrete, norm=plt.Normalize(vmin=0, vmax=len(m1_values_unique) - 1))
 sm.set_array([])
@@ -428,7 +428,7 @@ for key, values in store_results.items():
     linestyle = '-' if a > 0 else '--'
     
     if (Tpl == 0.25) and (e_f == 0.01):
-        ax2.plot(e_back, frequency_gw_2phi, linestyle, color=color, alpha=0.7, linewidth=2)
+        ax2.plot(e_back, frequency_gw_2phi, linestyle, color=color, alpha=0.9, linewidth=2)
 
 ax2.set_xlabel("Eccentricity")
 # ax2.set_ylabel("GW Frequency [Hz]")  # Shared y-axis
