@@ -91,47 +91,39 @@ for idx, inf_file in enumerate(inference_files):
             param_names = np.array(param_names, dtype=str).tolist()
             inference_metadata[source_key].update({"param_names": param_names})
 
+            # populate precision dict for this source
+            if source_key not in inference_precision_data:
+                inference_precision_data[source_key] = {}
+
             for ii, name in enumerate(param_names):
                 if name == 'M':
-                    if source_key not in inference_precision_data:
-                        inference_precision_data[source_key] = {}
                     inference_precision_data[source_key].update({
                         "relative_precision_m1_det": detector_precision[:, param_names.index(name)] / (inference_metadata[source_key]['m1'] * (1 + inference_metadata[source_key]['redshift'])),
                         "relative_precision_m1": source_precision[:, param_names.index(name)] / inference_metadata[source_key]['m1']
                     })
                 elif name == 'mu':
-                    if source_key not in inference_precision_data:
-                        inference_precision_data[source_key] = {}
                     inference_precision_data[source_key].update({
                         "relative_precision_m2_det": detector_precision[:, param_names.index(name)] / (inference_metadata[source_key]['m2'] * (1 + inference_metadata[source_key]['redshift'])),
                         "relative_precision_m2": source_precision[:, param_names.index(name)] / inference_metadata[source_key]['m2']
                     })
                 elif name == 'e0':
-                    if source_key not in inference_precision_data:
-                        inference_precision_data[source_key] = {}
                     inference_precision_data[source_key].update({
                         "relative_precision_e0": detector_precision[:, param_names.index(name)] / inference_metadata[source_key]['e0']
                     })
                 else:
-                    if source_key not in inference_precision_data:
-                        inference_precision_data[source_key] = {}
                     inference_precision_data[source_key].update({
                         "absolute_precision_" + name: detector_precision[:, param_names.index(name)]
                     })
                 
                 if name == 'dist':
-                    if source_key not in inference_precision_data:
-                        inference_precision_data[source_key] = {}
                     inference_precision_data[source_key].update({
                         "relative_precision_" + name: detector_precision[:, param_names.index(name)] / inference_metadata[source_key][name]
                     })
                 if name == 'a':
-                    if source_key not in inference_precision_data:
-                        inference_precision_data[source_key] = {}
                     inference_precision_data[source_key].update({
                         "relative_precision_" + name: detector_precision[:, param_names.index(name)] / inference_metadata[source_key][name]
                     })
-            
+
             inference_precision_data[source_key].update({"snr": run_group['snr'][()]})
 
 print(f"Loaded metadata for {len(inference_metadata)} sources")
@@ -242,39 +234,108 @@ for precision_metric in list(ylabel_map.keys()):
     print(f"Data table saved: figures/{output_filename_md}")
 
 # -----------------------------------------------------------------------------
-# Generate markdown table summary
+# Generate markdown and LaTeX table summary (including redshift)
 # -----------------------------------------------------------------------------
-print("\nGenerating precision summary table...")
+print("\nGenerating precision summary table (markdown + LaTeX)...")
 
-# Collect all precision metrics
-all_metrics = sorted({k for d in inference_precision_data.values() for k in d.keys()})
+# Use only the requested metrics (in this specific order)
+desired_metrics = [
+    'absolute_precision_OmegaS',
+    'relative_precision_dist',
+    'relative_precision_a',
+    'relative_precision_e0',
+    'relative_precision_m1',
+    'relative_precision_m1_det',
+    'relative_precision_m2',
+    'relative_precision_m2_det',
+]
 
-# Prepare table header
-header = "| m1 | m2 | " + " | ".join(all_metrics) + " |"
-divider = "|---" * (2 + len(all_metrics)) + "|"
+# Prepare markdown table header (add redshift column)
+all_metrics = desired_metrics
+header = "| m1 | m2 | a | e0 | z | " + " | ".join(all_metrics) + " |"
+divider = "|---" * (5 + len(all_metrics)) + "|"
 
-rows = []
-for src_key in sorted(inference_metadata.keys()):
-    m1 = inference_metadata[src_key]['m1']
-    m2 = inference_metadata[src_key]['m2']
-    row = [f"{m1:.2e}", f"{m2:.2e}"]
-    for metric in all_metrics:
-        if metric in inference_precision_data[src_key]:
-            val = np.median(inference_precision_data[src_key][metric])
-            row.append(f"{val:.2e}")
-        else:
-            row.append("-")
-    rows.append("| " + " | ".join(row) + " |")
+# Group sources by unique Tpl values and create separate tables per Tpl
+tpl_values = sorted({round(inference_metadata[k]['T'], 8) for k in inference_metadata.keys()})
 
-# Write to markdown file
-markdown_content = "# Precision Summary Table\n\n"
-markdown_content += "This table summarizes the median precision for each metric and each source (by m1, m2).\n\n"
-markdown_content += header + "\n"
-markdown_content += divider + "\n"
-for row in rows:
-    markdown_content += row + "\n"
+for tpl_group in tpl_values:
+    rows = []
+    latex_rows = []
+    for src_key in sorted(inference_metadata.keys()):
+        src_tpl = inference_metadata[src_key]['T']
+        if abs(src_tpl - tpl_group) > tolerance:
+            continue
 
-with open(os.path.join(script_dir, "precision_summary.md"), "w") as f:
-    f.write(markdown_content)
+        m1 = inference_metadata[src_key]['m1']
+        m2 = inference_metadata[src_key]['m2']
+        a = inference_metadata[src_key]['a']
+        e0 = inference_metadata[src_key]['e0']
+        z = inference_metadata[src_key]['redshift']
+        row = [f"{m1:.0e}", f"{m2:.0e}", f"{a:.2f}", f"{e0:.3f}", f"{z:.3f}"]
+        latex_row = [f"{m1:.0e}", f"{m2:.0e}", f"{a:.2f}", f"{e0:.3f}", f"{z:.3f}"]
+        for metric in all_metrics:
+            if metric in inference_precision_data.get(src_key, {}):
+                val = np.median(inference_precision_data[src_key][metric])
+                row.append(f"{val:.2e}")
+                latex_row.append(f"{val:.2e}")
+            else:
+                row.append("-")
+                latex_row.append("-")
+        rows.append("| " + " | ".join(row) + " |")
+        latex_rows.append(" & ".join(latex_row) + " \\\\ \n")
 
-print("Precision summary saved to figures/precision_summary.md")
+    # Write to markdown file for this Tpl group
+    markdown_content = "# Precision Summary Table\n\n"
+    markdown_content += f"This table summarizes the median precision for each metric and each source (Tpl={tpl_group}).\n\n"
+    markdown_content += header + "\n"
+    markdown_content += divider + "\n"
+    for row in rows:
+        markdown_content += row + "\n"
+
+    md_path = os.path.join(script_dir, f"precision_summary_Tpl{tpl_group:.2f}.md")
+    with open(md_path, "w") as f:
+        f.write(markdown_content)
+
+    # Also write a LaTeX file with a tabular of the same information for this Tpl
+    tex_header_cols = "c" * (5 + len(all_metrics))
+    tex_path = os.path.join(script_dir, f"precision_summary_Tpl{tpl_group:.2f}.tex")
+    latex_label_map = {
+        'm1': r"$m_1$",
+        'm2': r"$m_2$",
+        'a': r"$a$",
+        'e0': r"$e_0$",
+        'redshift': r"$z$",
+        'absolute_precision_OmegaS': r"$\Delta \Omega_S [\mathrm{deg}^2]$",
+        'absolute_precision_dist': r"$\sigma_{d_L}$",
+        'relative_precision_a': ylabel_map.get('relative_precision_a', r"$\sigma_a/a$"),
+        'relative_precision_dist': ylabel_map.get('relative_precision_dist', r"$\sigma_{d_L}/d_L$"),
+        'relative_precision_e0': ylabel_map.get('relative_precision_e0', r"$\sigma_{e_0}/e_0$"),
+        'relative_precision_m1': ylabel_map.get('relative_precision_m1', r"$\sigma_{m_1}/m_1$"),
+        'relative_precision_m1_det': ylabel_map.get('relative_precision_m1_det', r"$\sigma_{m_{1,\mathrm{det}}}/m_{1,\mathrm{det}}$"),
+        'relative_precision_m2': ylabel_map.get('relative_precision_m2', r"$\sigma_{m_2}/m_2$"),
+        'relative_precision_m2_det': ylabel_map.get('relative_precision_m2_det', r"$\sigma_{m_{2,\mathrm{det}}}/m_{2,\mathrm{det}}$"),
+        'snr': ylabel_map.get('snr', 'SNR')
+    }
+
+    with open(tex_path, "w") as f:
+        f.write("\\documentclass{article}\n")
+        f.write("\\usepackage{booktabs}\n")
+        f.write("\\begin{document}\n")
+        f.write("\\begin{table}[ht]\n\\centering\n")
+        f.write("\\caption{Precision summary table (median values)}\n")
+        f.write('\\begin{tabular}{%s}\n' % tex_header_cols)
+        f.write("\\toprule\n")
+        # LaTeX header row (use math-formatted labels)
+        tex_header = [latex_label_map['m1'], latex_label_map['m2'], latex_label_map['a'], latex_label_map['e0'], latex_label_map['redshift']] + [latex_label_map.get(m, m.replace('_','\\_')) for m in all_metrics]
+        f.write(" & ".join(tex_header) + " \\\\ \n")
+        f.write("\\midrule\n")
+        # Rows
+        for lr in latex_rows:
+            f.write(lr)
+        f.write("\\bottomrule\n")
+        f.write("\\end{tabular}\n")
+        f.write("\\end{table}\n")
+        f.write("\\end{document}\n")
+
+    print(f"Precision summary saved: {md_path}")
+    print(f"LaTeX precision summary saved: {tex_path}")
