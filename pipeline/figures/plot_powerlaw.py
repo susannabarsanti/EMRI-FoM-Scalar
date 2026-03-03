@@ -144,7 +144,7 @@ region_hw = 0.03
 
 # LVK constraint values
 A_GW250114 = 6e-3   # GW250114 - quadrupole (n_r = -2)
-A_GW230529 = 6.4e-4   # GW230529 - scalar dipole (n_r = 1)
+A_GW230529 = 6.4e-4 / 4  # GW230529 - scalar dipole (n_r = 1)
 
 # DM constraint at n_r = 5.5
 A_DM_highmass = 1e-5      # rho_DM = 1e17 M_sun/pc^3
