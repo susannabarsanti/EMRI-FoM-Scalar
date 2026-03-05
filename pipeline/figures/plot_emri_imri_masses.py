@@ -48,6 +48,14 @@ with open(os.path.join(pipeline_dir, "lvk_gw_events.json"), "r") as f:
 # Load stored EMRI sources
 with open(os.path.join(pipeline_dir, "so3_sources_Dec8.json"), "r") as f:
     store_results = json.load(f)
+# Load TDEs
+with open(os.path.join(pipeline_dir, "tdes_bh_mass_and_redshift.json"), "r") as f:
+    tde_sources = json.load(f)
+tde_mbh = np.array([item["log_M_BH_Msun"] for item in tde_sources])
+tde_z = np.array([item["Redshift"] for item in tde_sources])
+mask = (tde_mbh!=0.0)
+tde_mbh = 10**tde_mbh[mask]
+tde_z = tde_z[mask]
 
 # Data from 2020ARA&A..58..257G - Local galaxy measurements
 # Green circles (confirmed detections) - distance in Mpc, mass in Msun
@@ -100,9 +108,13 @@ ax1.plot(masses_qpe[mask_qpe], z_qpe[mask_qpe], 'D', color='purple', alpha=0.5, 
 ax1.plot(list_mass, list_redshift, 'X', color='k', alpha=0.5, markersize=8, label='AGN')
 
 # Local galaxies from 2020ARA&A
-ax1.semilogy(local_galaxy_masses, local_galaxy_z, 's', color='orange', alpha=0.5, markersize=6, label='Local Galaxies')
+# ax1.semilogy(local_galaxy_masses, local_galaxy_z, 's', color='orange', alpha=0.5, markersize=6, label='Local Galaxies')
 
-ax1.legend(loc='lower left', fontsize=7)
+mask_tde = (tde_mbh <= 1e7)
+ax1.semilogy(tde_mbh[mask_tde], tde_z[mask_tde], 'P', color='green', alpha=0.5, markersize=6, label='TDEs')
+
+
+ax1.legend(loc='lower left', fontsize=6)
 
 ax1.set_ylabel("Redshift $z$")
 # ax1.set_ylim(1e-3, 5)

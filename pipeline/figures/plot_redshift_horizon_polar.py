@@ -75,6 +75,14 @@ with h5py.File('sdss_dr16q_quasars.h5', 'r') as f:
     redshift_sdss = redshift_sdss[mask]
     log10massbh_sdss = log10massbh_sdss[mask]
     massbh_sdss = 10**log10massbh_sdss
+# Load TDEs
+with open(os.path.join(pipeline_dir, "tdes_bh_mass_and_redshift.json"), "r") as f:
+    tde_sources = json.load(f)
+tde_mbh = np.array([item["log_M_BH_Msun"] for item in tde_sources])
+tde_z = np.array([item["Redshift"] for item in tde_sources])
+mask = (tde_mbh!=0.0)
+tde_mbh = 10**tde_mbh[mask]
+tde_z = tde_z[mask]
 
 # -----------------------------------------------------------------------------
 # Load detection data
@@ -199,7 +207,8 @@ for idx, m2 in enumerate(sorted(z_data.keys())):
 obs_data = {
     'QPE': (masses_qpe, z_qpe, 'purple', 'D', 6, 0.5),
     'AGN': (smbh_masses, smbh_redshifts, 'k', 'X', 8, 0.5),
-    'SDSS': (massbh_sdss, redshift_sdss, 'blue', '.', 5, 0.1)
+    'SDSS': (massbh_sdss, redshift_sdss, 'blue', '.', 5, 0.1),
+    'TDEs': (tde_mbh, tde_z, 'green', 'P', 6, 0.5)
 }
 
 for obs_type, (masses, zs, color, marker, ms, alpha) in obs_data.items():
@@ -224,8 +233,9 @@ legend_elements_obs = [
     Line2D([0], [0], marker='D', label='QPE and QPO', alpha=0.5, markerfacecolor='purple', markersize=6, linestyle='None', color='purple'),
     Line2D([0], [0], marker='X', label='AGN', alpha=0.5, markerfacecolor='k', markersize=8, linestyle='None', color='k'),
     Line2D([0], [0], marker='.', label='SDSS Quasars', alpha=0.1, markerfacecolor='blue', markersize=8, linestyle='None', color='blue'),
+    Line2D([0], [0], marker='P', label='TDEs', alpha=0.5, markerfacecolor='green', markersize=6, linestyle='None', color='green'),
 ]
-leg_obs = ax.legend(handles=legend_elements_obs, frameon=True, bbox_to_anchor=(0.5, -0.1), loc='center', ncol=3, fontsize=8)
+leg_obs = ax.legend(handles=legend_elements_obs, frameon=True, bbox_to_anchor=(0.5, -0.1), loc='center', ncol=2, fontsize=8)
 ax.add_artist(leg_obs)
 
 ax.set_rlabel_position(90)
