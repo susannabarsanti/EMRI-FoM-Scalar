@@ -98,14 +98,14 @@ fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(3.25, 2*2), sharex=True,
 # =============================================================================
 # Plot EM observations
 # SDSS Quasars (background) - consistent with plot_redshift_at_snr.py
-ax1.plot(massbh_sdss, redshift_sdss, '.', color='blue', alpha=0.1, markersize=8, zorder=0, label='SDSS Quasars')
-
-# QPE and QPO data - consistent with plot_redshift_at_snr.py
-mask_qpe = masses_qpe <= 1e7
-ax1.plot(masses_qpe[mask_qpe], z_qpe[mask_qpe], 'D', color='purple', alpha=0.5, markersize=6, label='QPE and QPO')
+ax1.plot(massbh_sdss, redshift_sdss, '.', color='blue', alpha=0.1, markersize=8, zorder=0, label='Quasars')
 
 # AGN/SMBH data - consistent with plot_redshift_at_snr.py
 ax1.plot(list_mass, list_redshift, 'X', color='k', alpha=0.5, markersize=8, label='AGN')
+
+# QPE and QPO data - consistent with plot_redshift_at_snr.py
+mask_qpe = masses_qpe <= 1e7
+ax1.plot(masses_qpe[mask_qpe], z_qpe[mask_qpe], 'D', color='purple', alpha=0.5, markersize=6, label='QPEs and QPOs')
 
 # Local galaxies from 2020ARA&A
 # ax1.semilogy(local_galaxy_masses, local_galaxy_z, 's', color='orange', alpha=0.5, markersize=6, label='Local Galaxies')

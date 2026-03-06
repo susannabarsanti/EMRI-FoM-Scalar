@@ -230,9 +230,9 @@ for obs_type, (masses, zs, color, marker, ms, alpha) in obs_data.items():
 
 # Legend for observations
 legend_elements_obs = [
-    Line2D([0], [0], marker='D', label='QPE and QPO', alpha=0.5, markerfacecolor='purple', markersize=6, linestyle='None', color='purple'),
+    Line2D([0], [0], marker='.', label='Quasars', alpha=0.1, markerfacecolor='blue', markersize=8, linestyle='None', color='blue'),
     Line2D([0], [0], marker='X', label='AGN', alpha=0.5, markerfacecolor='k', markersize=8, linestyle='None', color='k'),
-    Line2D([0], [0], marker='.', label='SDSS Quasars', alpha=0.1, markerfacecolor='blue', markersize=8, linestyle='None', color='blue'),
+    Line2D([0], [0], marker='D', label='QPEs and QPOs', alpha=0.5, markerfacecolor='purple', markersize=6, linestyle='None', color='purple'),
     Line2D([0], [0], marker='P', label='TDEs', alpha=0.5, markerfacecolor='green', markersize=6, linestyle='None', color='green'),
 ]
 leg_obs = ax.legend(handles=legend_elements_obs, frameon=True, bbox_to_anchor=(0.5, -0.1), loc='center', ncol=2, fontsize=8)

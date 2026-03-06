@@ -210,9 +210,9 @@ mask_tde = (tde_mbh <= 1e7)
 ax1.semilogy(tde_mbh[mask_tde], tde_z[mask_tde], 'P', color='green', alpha=0.5, markersize=6, label='TDEs')
 
 legend_elements += [
-    Line2D([0], [0], marker='D', label='QPE and QPO', alpha=0.5, markerfacecolor='purple', markersize=6, linestyle='None', color='purple'),
+    Line2D([0], [0], marker='.', label='Quasars', alpha=0.1, markerfacecolor='blue', markersize=8, linestyle='None', color='blue'),
     Line2D([0], [0], marker='X', label='AGN', alpha=0.5, markerfacecolor='k', markersize=8, linestyle='None', color='k'),
-    Line2D([0], [0], marker='.', label='SDSS Quasars', alpha=0.1, markerfacecolor='blue', markersize=8, linestyle='None', color='blue'),
+    Line2D([0], [0], marker='D', label='QPEs and QPOs', alpha=0.5, markerfacecolor='purple', markersize=6, linestyle='None', color='purple'),
     Line2D([0], [0], marker='P', label='TDEs', alpha=0.5, markerfacecolor='green', markersize=6, linestyle='None', color='green'),
 ]
 leg2 = ax1.legend(handles=legend_elements, frameon=True, loc='lower left', title=r'EM Observations', framealpha=0.0)
