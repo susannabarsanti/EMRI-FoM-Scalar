@@ -229,7 +229,7 @@ export CUDACXX=/usr/local/cuda/bin/nvcc
 export NVCC_PREPEND_FLAGS='-ccbin /usr/bin/g++'
 
 # Clone and install EMRI-FoM packages
-git clone https://github.com/cchapmanbird/EMRI-FoM.git emri_fom_temp
+git clone https://github.com/lorenzsp/EMRI-FoM.git emri_fom_temp
 cd emri_fom_temp/lisa-on-gpu/
 python setup.py install
 cd ../StableEMRIFisher-package/
@@ -306,7 +306,7 @@ We welcome contributions! Please feel free to submit issues, feature requests, o
 If you use the results or code provided in this repository, please cite:
 
 ```bibtex
-@article{speri2025fom,
+@article{speri_2025_emri_imri,
   title = {Quantifying the Scientific Potential of Intermediate and Extreme Mass Ratio Inspirals with the Laser Interferometer Space Antenna},
   author = {Speri, Lorenzo and Duque, Francisco and Santini, Alessandro and Barsanti, Susanna and Kejriwal, Shubham and Burke, Ollie and Chapman-Bird, Christian},
   journal = {In preparation},
