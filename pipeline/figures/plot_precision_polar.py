@@ -52,9 +52,9 @@ ylabel_map = {
     "relative_precision_m2": r"$\sigma_{m_{2}}/m_{2}$",
     "relative_precision_dist": r"$\sigma_{d_L}/d_L$",
     "relative_precision_a": r"$\sigma_{a}/a$",
-    "absolute_precision_a": r"$\sigma_{a}$",
+    # "absolute_precision_a": r"$\sigma_{a}$",
     "absolute_precision_OmegaS": r"Sky Localization $\Delta\Omega_S\;[\mathrm{deg}^2]$",
-    "snr": "SNR",
+    # "snr": "SNR",
 }
 
 # Title mapping for a cleaner figure title
@@ -158,6 +158,14 @@ print(f"Loaded metadata for {len(inference_metadata)} sources")
 # -----------------------------------------------------------------------------
 def format_sigfigs(v, n=2):
     """Format value with n significant figures, avoiding scientific notation when possible."""
+    if v == 1.0:
+        return "1"
+    if v == 5.0:
+        return "5"
+    if v == 10.0:
+        return "10"
+    if v == 50.0:
+        return "50"
     if v == 0:
         return '0'
     magnitude = floor(log10(abs(v)))
@@ -169,6 +177,17 @@ def format_sigfigs(v, n=2):
 # -----------------------------------------------------------------------------
 # Collect data grouped by m2 for each precision metric
 # -----------------------------------------------------------------------------
+
+# --- Custom radial grids for each metric ---
+custom_r_grids = {
+    "absolute_precision_OmegaS": [10, 100, 1000],
+    "relative_precision_a": [0.01, 0.001, 0.0001],
+    "relative_precision_dist": [0.15, 0.2, 0.3],
+    "relative_precision_m1": [0.01, 0.1, 1],
+    "relative_precision_m2": [0.01, 0.1, 1],
+    # Add more if needed
+}
+
 for precision_metric in list(ylabel_map.keys()):
     # Group precision data by m2, then by m1
     precision_by_m2 = {}
@@ -176,30 +195,23 @@ for precision_metric in list(ylabel_map.keys()):
 
     for src_key in sorted(inference_metadata.keys()):
         source_id, run_type = src_key
-        
         if run_type != selected_run_type:
             continue
-        
         # Filter by spin and Tpl
         src_a = inference_metadata[src_key]['a']
         src_tpl = inference_metadata[src_key]['T']
         if abs(src_a - spin_a) > tolerance or abs(src_tpl - tpl_val) > tolerance:
             continue
-        
         m1 = inference_metadata[src_key]['m1']
         m2 = inference_metadata[src_key]['m2']
-        
         # Check if this precision metric exists for this source
         if precision_metric not in inference_precision_data[src_key]:
             continue
-        
         # Get precision array and compute median (across realizations)
         precision_array = inference_precision_data[src_key][precision_metric]
         precision_median = np.median(np.abs(precision_array))
         precision_deg = precision_median * np.sqrt(degradation)
-        
         all_m1_vals.add(m1)
-        
         if m2 not in precision_by_m2:
             precision_by_m2[m2] = {'m1': [], 'precision': []}
         precision_by_m2[m2]['m1'].append(m1)
@@ -212,10 +224,8 @@ for precision_metric in list(ylabel_map.keys()):
     # Sort m1 values to define angular sectors
     m1_list = sorted(all_m1_vals)
     num_m1 = len(m1_list)
-    
     if num_m1 == 0:
         continue
-
     # Map each m1 to an angular sector
     m1_to_sector = {}
     for i, m1_val in enumerate(m1_list):
@@ -223,24 +233,20 @@ for precision_metric in list(ylabel_map.keys()):
         theta_max = (i + 1) * (2 * np.pi / num_m1)
         m1_to_sector[m1_val] = (theta_min, theta_max)
 
-    # -------------------------------------------------------------------------
-    # Create polar plot
-    # -------------------------------------------------------------------------
-    fig = plt.figure(figsize=(3.25 * 2.0, 2.0 * 2.))
+    # Create polar plot for this metric
+    fig = plt.figure(figsize=(3.25 * 2.0, 2.0 * 1.1))
     ax = fig.add_subplot(111, polar=True)
-    
+
     # Assign colors to m2 values
     m2_list = sorted(precision_by_m2.keys())
     num_m2 = len(m2_list)
     colors = plt.cm.tab20(np.linspace(0, 1, max(num_m2, 1)))
     m2_color_dict = {m2: colors[idx] for idx, m2 in enumerate(m2_list)}
 
-    theta_rot = -np.pi / (2 * num_m1)  # Small rotation for aesthetics
-
+    theta_rot = 0.0
     for idx, m2 in enumerate(m2_list):
         m1_vals = np.array(precision_by_m2[m2]['m1'])
         prec_vals = np.array(precision_by_m2[m2]['precision'])
-        
         for i, m1_val in enumerate(m1_vals):
             if m1_val not in m1_to_sector:
                 continue
@@ -254,39 +260,41 @@ for precision_metric in list(ylabel_map.keys()):
     ax.set_rscale('log')
     ax.set_rlabel_position(90)
 
-    # Radial grid ticks: auto-determine from data
-    all_prec = []
-    for m2 in precision_by_m2:
-        all_prec.extend(precision_by_m2[m2]['precision'])
-    all_prec = np.array(all_prec)
-    prec_min_log = np.floor(np.log10(all_prec.min()))
-    prec_max_log = np.ceil(np.log10(all_prec.max()))
-    r_ticks = [10**e for e in np.arange(prec_min_log, prec_max_log + 1)]
-    # Filter ticks within data range
-    r_ticks = [r for r in r_ticks if r >= all_prec.min() * 0.5 and r <= all_prec.max() * 2]
-    if len(r_ticks) > 0:
-        def _fmt_rtick(r):
-            """Format a radial tick value as valid LaTeX."""
-            if r == 0:
-                return r'$0$'
-            exp = int(np.floor(np.log10(abs(r))))
-            coeff = r / 10**exp
-            if abs(coeff - 1.0) < 1e-9:
-                return rf'$10^{{{exp}}}$'
-            return rf'${coeff:.0f}\times10^{{{exp}}}$'
-        ax.set_rgrids(r_ticks, angle=88,
-                      labels=[_fmt_rtick(r) for r in r_ticks])
+    # Remove default radial labels and ticks
+    ax.yaxis.set_major_locator(plt.NullLocator())
+    ax.yaxis.set_minor_locator(plt.NullLocator())
+    ax.yaxis.set_major_formatter(plt.NullFormatter())
+    ax.yaxis.set_minor_formatter(plt.NullFormatter())
+    ax.grid(False)
 
-    # Rotate radial labels to vertical
-    for label in ax.get_yticklabels():
-        label.set_rotation(90)
+    # Custom radial grid for this metric
+    r_grids = custom_r_grids.get(precision_metric, [])
+    # print(f"Adding custom radial grid lines at: {r_grids}")
+    # ax.set_rticks(r_grids)
+    # ax.set_yticklabels([format_sigfigs(r) for r in r_grids])
+    # ax.grid(True)
+    # ax.yaxis.grid(True, linestyle='--', linewidth=2)
+    # ax.xaxis.grid(True, linestyle='--', linewidth=2)
+    # ax.set_rlabel_position(0)  # or any angle in degrees you prefer
 
-    ax.grid(True, alpha=0.8, linewidth=2)
+    for r in r_grids:
+        theta = np.linspace(0, 2 * np.pi, 500)
+        ax.plot(theta, np.full_like(theta, r), color='gray', linestyle='--', linewidth=2, alpha=0.3)
+        ax.text(np.pi / 2 * 1.0, r * 1., str(r), ha='left', va='bottom', fontsize=9, color='gray')
+    r_ev = np.linspace(min(r_grids), ax.get_ylim()[1], 100)
+    ax.plot(np.ones_like(r_ev) * 0.0, r_ev, color='gray', linestyle='-', linewidth=1, alpha=0.1)
+    ax.plot(np.ones_like(r_ev) * np.pi/2, r_ev, color='gray', linestyle='-', linewidth=1, alpha=0.1)
+    ax.plot(np.ones_like(r_ev) * 2*np.pi/2, r_ev, color='gray', linestyle='-', linewidth=1, alpha=0.1)
+    ax.plot(np.ones_like(r_ev) * 3*np.pi/2, r_ev, color='gray', linestyle='-', linewidth=1, alpha=0.1)
+    # ax.plot(np.ones_like(r_ev) * 3*np.pi/2, r_ev, color='gray', linestyle='-', linewidth=1, alpha=0.3)
+    
     ax.spines['polar'].set_visible(False)
 
     # Set theta ticks at sector midpoints with m1 labels
-    theta_grids_deg = [(i + 0.5) * (360 / num_m1) + np.rad2deg(theta_rot) for i in range(num_m1)]
+    theta_grids_deg = [(i + 0.0) * (360 / num_m1) + np.rad2deg(theta_rot) for i in range(num_m1)]
     ax.set_thetagrids(theta_grids_deg, labels=[''] * num_m1)
+    # change for label
+    theta_grids_deg = [(i + 0.5) * (360 / num_m1) + np.rad2deg(theta_rot) for i in range(num_m1)]
 
     # Add custom m1 labels
     r_label = ax.get_ylim()[1] * 1.3
@@ -308,7 +316,7 @@ for precision_metric in list(ylabel_map.keys()):
                linestyle='-', linewidth=2, color=m2_color_dict[m2])
         for m2 in m2_list
     ]
-    ax.legend(handles=legend_elements_m2, bbox_to_anchor=(0.5, -0.15),
+    ax.legend(handles=legend_elements_m2, bbox_to_anchor=(0.5, -0.05),
               loc='upper center', ncols=min(num_m2, 4),
               title=r'Secondary mass $m_2\;[M_\odot]$')
 
@@ -317,5 +325,6 @@ for precision_metric in list(ylabel_map.keys()):
     plt.savefig(os.path.join(script_dir, output_filename), dpi=400, bbox_inches='tight')
     plt.close(fig)
     print(f"Polar precision plot saved: figures/{output_filename}")
+    plt.close('all')
 
 print("\nAll polar precision plots generated.")

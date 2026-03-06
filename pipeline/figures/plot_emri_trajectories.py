@@ -323,7 +323,7 @@ for key, values in store_results.items():
     linestyle = '-' if a > 0 else '--'
     
     if (Tpl == 0.25)and(e_f == 0.01):
-        plt.plot(frequency_gw_2phi, e_back, linestyle, color=color, alpha=0.7, linewidth=2)
+        plt.plot(frequency_gw_2phi, e_back, linestyle, color=color, alpha=0.9, linewidth=2)
     
     # # Add markers for starting points
     # if a > 0.0:
@@ -428,7 +428,7 @@ for key, values in store_results.items():
     linestyle = '-' if a > 0 else '--'
     
     if (Tpl == 0.25) and (e_f == 0.01):
-        ax2.plot(e_back, frequency_gw_2phi, linestyle, color=color, alpha=0.7, linewidth=2)
+        ax2.plot(e_back, frequency_gw_2phi, linestyle, color=color, alpha=0.9, linewidth=2)
 
 ax2.set_xlabel("Eccentricity")
 # ax2.set_ylabel("GW Frequency [Hz]")  # Shared y-axis

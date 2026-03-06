@@ -144,7 +144,7 @@ region_hw = 0.03
 
 # LVK constraint values
 A_GW250114 = 6e-3   # GW250114 - quadrupole (n_r = -2)
-A_GW230529 = 6.4e-4   # GW230529 - scalar dipole (n_r = 1)
+A_GW230529 = 6.4e-4 / 4  # GW230529 - scalar dipole (n_r = 1)
 
 # DM constraint at n_r = 5.5
 A_DM_highmass = 1e-5      # rho_DM = 1e17 M_sun/pc^3
@@ -242,7 +242,7 @@ for m1, m2 in unique_systems:
 # -----------------------------------------------------------------------------
 # Create plot
 # -----------------------------------------------------------------------------
-fig, ax = plt.subplots(figsize=(3.25, 4))
+fig, ax = plt.subplots(figsize=(3.25, 3))
 
 
 # -----------------------------------------------------------------------------
@@ -324,7 +324,7 @@ ax.set_xticks(range(min_nr, max_nr + 1))
 ax.set_xlim(min_nr - 0.5, max_nr + 0.5)
 ax.minorticks_off()
 
-ax.set_xlabel(r"Effect Radial slope $n_r$")
+ax.set_xlabel(r"Effect radial slope $n_r$")
 ax.set_ylabel(r"Constraint on effect $\sigma_A$")
 ax.set_yscale("log")
 
@@ -337,11 +337,11 @@ ax.set_ylim(y_min, y_max)
 # -----------------------------------------------------------------------------
 # Plot requirement line
 # -----------------------------------------------------------------------------
-requirement = 1.4 * np.max(np.stack([np.asarray(all_absA_vals)[:4], np.asarray(all_absA_vals)[4:]]),axis=0)
-ax.plot(nr_vals, requirement, 'r:', lw=1, label='Requirement')
-ax.annotate('Requirement', xy=(nr_vals[len(nr_vals)//2], requirement[len(nr_vals)//2]*2.5),
-            xytext=(nr_vals[len(nr_vals)//2], requirement[len(nr_vals)//2]*2.5),
-            fontsize=7, color='red', ha='center', va='bottom')
+# requirement = 1.4 * np.max(np.stack([np.asarray(all_absA_vals)[:4], np.asarray(all_absA_vals)[4:]]),axis=0)
+# ax.plot(nr_vals, requirement, 'r:', lw=1, label='Requirement')
+# ax.annotate('Requirement', xy=(nr_vals[len(nr_vals)//2], requirement[len(nr_vals)//2]*2.5),
+#             xytext=(nr_vals[len(nr_vals)//2], requirement[len(nr_vals)//2]*2.5),
+#             fontsize=7, color='red', ha='center', va='bottom')
 # -----------------------------------------------------------------------------
 # Set y-axis to show each power of 10
 # -----------------------------------------------------------------------------
@@ -417,7 +417,7 @@ ax.annotate('GW230529', xy=(n_r_dipole + 0.2, A_GW230529 * 0.3),
 ax.errorbar([0.8], [5.57e-6], yerr=[[5.57e-6-2.01e-6], [5.57e-6+3.24e-6]], fmt='x', color=styles[(1000000.0, 100.0)]['color'], markersize=5, zorder=10, alpha=0.7)
 ax.errorbar([0.8], [1.59e-6], yerr=[[1.59e-6-0.56e-6], [1.59e-6+0.85e-6]], fmt='x', color=styles[(100000.0, 10.0)]['color'], markersize=5, label='Full model', zorder=10, alpha=0.7)
 # arrow to relativistic model
-ax.annotate('', xy=(0.7, 0.3e-5), xytext=(-1, 0.4e-6), arrowprops=dict(arrowstyle='->', color='black', lw=0.8))
+ax.annotate('', xy=(0.7, 0.3e-5), xytext=(-1, 1e-6), arrowprops=dict(arrowstyle='->', color='black', lw=0.8))
 ax.annotate('Relativistic \n Model $\\times$', xy=(0.7, 1e-5),xytext=(-0.5, 1e-7),fontsize=6, color='black', ha='center', va='bottom')
 # -----------------------------------------------------------------------------
 # Create legends
