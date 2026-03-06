@@ -10,10 +10,10 @@
 # specify number of tasks/cores per node required
 #SBATCH --ntasks-per-node=1
 
-#SBATCH --exclude=sonicgpu1,sonicgpu2,sonicgpu3,sonicgpu4,sonicgpu5,sonicgpu6,sonicgpu7,sonicgpu8,sonicgpu9,sonicgpu10,sonicgpu11,sonicgpu12,sonicgpu13,sonicgpu14,sonicgpu15,sonicgpu16,sonicgpu17
+#SBATCH --exclude=sonicgpu1,sonicgpu2,sonicgpu3,sonicgpu4,sonicgpu5,sonicgpu6,sonicgpu7,sonicgpu8
 
 # specify the walltime e.g 2 mins
-#SBATCH -t 25:05:10
+#SBATCH -t 25:00:00
 
 # set to email at start,end and failed jobs
 #SBATCH --mail-type=ALL
@@ -28,7 +28,7 @@ cd $SLURM_SUBMIT_DIR
 nvidia-smi
 nvidia-smi -q | grep "Compute Capability"
 
-#conda activate few_kerr2 #in few_kerr2 c'è installato few di soton , lisa-on-gpu senza EqualArms e FoM con tue modifiche
+
 conda activate few_v2
 module load cuda/12.6
 which nvcc
@@ -36,7 +36,7 @@ which nvcc
 
 #python pipeline_S05_FoM.py --M 1e6 --mu 1.4 --a 0.9 --e_f 0.0 --T 1.0 --z 0.08 --psd_file TDI2_AE_psd.npy --dt 10.0 --use_gpu --N_montecarlo 1 --device 0 --use_scalar_charge --Lambda 0.01 --ScalarMass 0.036  --repo test_acc --calculate_fisher 1
 #python pipeline_S05_FoM.py --M 1e6 --mu 10 --a 0.9 --e_f 0.0 --T 1.5 --z 0.1 --psd_file TDI2_AE_psd.npy --dt 10.0 --use_gpu --N_montecarlo 1 --device 0 --use_scalar_charge --Lambda 0.01 --ScalarMass 0.036  --repo scalar_results --calculate_fisher 1
-python pipeline_scalar_charge.py  --M 1e5 --mu 10 --a 0.99 --e_f 0.0 --T 4.5 --z 0.25 --psd_file TDI2_AE_psd.npy --dt 3.0 --use_gpu --N_montecarlo 1000 --device 0 --use_scalar_charge --Lambda 0.0 --ScalarMass 0.0  --repo scalar_results/massless_montecarlo/M1e5mu10a099z025dt3T45derorder8 --calculate_fisher 1
+python pipeline_scalar_charge.py  --M 1e6 --mu 100 --a 0.99 --e_f 0.0 --T 0.45 --z 0.5 --psd_file TDI2_AE_psd.npy --dt 10.0 --use_gpu --N_montecarlo 1000 --device 0 --use_scalar_charge --Lambda 0.0 --ScalarMass 0.0  --repo scalar_results/massless_montecarlo/M1e6mu100a099z05dt10T45derorder8 --calculate_fisher 1
 #python postprocess_scalar.py
 #python flux_scalar_plot.py
 

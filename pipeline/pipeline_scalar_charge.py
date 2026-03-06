@@ -1,5 +1,4 @@
-# python pipeline.py --M 1e6 --mu 1e1 --a 0.5 --e_f 0.1 --T 4.0 --z 0.5 --psd_file TDI2_AE_psd.npy --dt 10.0 --use_gpu --N_montecarlo 1 --device 0 --power_law --repo test_acc --calculate_fisher 1
-# singularity exec --nv ../fom_final.sif python pipeline.py --M 50000.0 --mu 50.0 --a 0.5 --e_f 0.0 --T 0.25 --z 0.5898912629902194 --psd_file ./TDI2_AE_psd_emri_background_1.5_yr.npy --dt 0.6 --use_gpu --N_montecarlo 1 --device 0 --repo test_ --calculate_fisher 1
+# python pipeline_scalar_charge.py --M 1e6 --mu 1e2 --a 0.99 --e_f 0.0 --T 4.5 --z 0.5 --psd_file TDI2_AE_psd.npy --dt 10.0 --use_gpu --N_montecarlo 1000 --device 0 --use_scalar_charge --Lambda 0.0 --ScalarMass 0.0 --repo nameoftherepo --calculate_fisher 1
 import os
 print("PID:",os.getpid())
 
@@ -64,7 +63,6 @@ def parse_arguments():
     #parser.add_argument("--Ndelta", help="Ndelta for the fisher computation", type=int, default=0.0)
     
     return parser.parse_args()
-
 
 
 

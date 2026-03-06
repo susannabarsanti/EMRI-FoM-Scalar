@@ -17,7 +17,7 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:
         source_f = sys.argv[1]
     else:
-        source_f = "scalar_results/massless_montecarlo/M1e6mu100a099z05dt10T45derorder8/" #inference_0/M1e5mu10a099z025dt3T45
+        source_f = "scalar_results/massless_montecarlo/M1e5mu10a099z025dt3T025derorder8/" #CAREFUL HERE!!! check the repo you want to analyse
     
     print("SNR dictionary file not found. Processing SNR data...")
     #inference_dict = {} #I put it later
