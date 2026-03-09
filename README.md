@@ -44,13 +44,9 @@ Our analysis provides quantitative insights into LISA's EMRI/IMRI science capabi
 ![Horizon Redshift EMRI/IMRIs](pipeline/figures/z_at_snr.png)
 *Maximum detection redshift as a function of system parameters*
 
-### Signal-to-Noise Ratio
-![FoM SNR EMRI/IMRIs](pipeline/figures/snr_fom_ranges_m2_1_Tpl_0.25_prograde_retrograde.png)
-*SNR distribution for different orbital configurations (prograde vs retrograde)*
-
 ### Parameter Estimation Precision
-![FoM Precision EMRI/IMRIs](pipeline/figures/scatter_relative_precision_a_m1_vs_m2_spin_a0.99.png)
-*Spin measurement precision across the mass parameter space*
+![FoM Precision EMRI/IMRIs](pipeline/figures/precision_m1_a_a_0.99_tpl_0.25.png)
+*Measurement precision across the mass parameter space*
 
 </div>
 
