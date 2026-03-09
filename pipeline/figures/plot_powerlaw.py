@@ -228,7 +228,7 @@ def format_mass_pair(m1, m2):
     """Format (m1, m2) pair for legend."""
     m1_str = format_smart(m1)
     m2_str = format_smart(m2)
-    return rf'$({m1_str},\, {m2_str})$'
+    return rf'${m1_str},\, {m2_str}$'
 
 # -----------------------------------------------------------------------------
 # Create color mapping - HARDCODED
@@ -415,19 +415,22 @@ ax.annotate('GW230529', xy=(n_r_dipole, A_GW230529),
 # Susi's points
 # -----------------------------------------------------------------------------
 # Relativistic model points (Susi's results)
-ax.errorbar([0.8], [5.57e-6], yerr=[[2.01e-6], [3.24e-6]], fmt='x', color='C0', markersize=5, zorder=10, alpha=0.7)
-ax.errorbar([0.8], [1.59e-6], yerr=[[0.56e-6], [0.85e-6]], fmt='x', color='#ff7f0e', markersize=5, zorder=10, alpha=0.7)
+# ax.errorbar([1.15], [5.57e-6], yerr=[[2.01e-6], [3.24e-6]], fmt='x', color='C0', markersize=5, zorder=10, alpha=0.7)
+# ax.errorbar([1.15], [1.59e-6], yerr=[[0.56e-6], [0.85e-6]], fmt='x', color='#ff7f0e', markersize=5, zorder=10, alpha=0.7)
+ax.scatter([1.15], [5.57e-6], marker='P', color='C0', s=25, zorder=10, alpha=0.7)
+ax.scatter([1.15], [1.59e-6], marker='P', color='#ff7f0e', s=25, zorder=10, alpha=0.7)
 # arrow to relativistic model
 ax.annotate('', xy=(0.7, 0.3e-5), xytext=(-0.5, 1e-6), arrowprops=dict(arrowstyle='->', color='black', lw=0.8))
-ax.annotate('Relativistic\nModel $\\times$', xy=(-0.5, 1e-7), xytext=(-0.5, 1e-7),
+ax.annotate('Relativistic\nModel', xy=(-0.5, 1e-7), xytext=(-0.5, 1e-7),
             fontsize=7, color='black', ha='center', va='bottom')
+ax.scatter([0.3], [1.6e-7], marker='P', color='k', s=25, zorder=10, alpha=0.5)
 # -----------------------------------------------------------------------------
 # Create legends
 # -----------------------------------------------------------------------------
 legend_elements_emri = []
 for m1, m2, T_val in unique_systems:
     style = styles[(m1, m2, T_val)]
-    T_label = rf'{format_mass_pair(m1, m2)}, $T={T_val}$'
+    T_label = rf'{format_mass_pair(m1, m2)}, {T_val}'
     legend_elements_emri.append(
         Line2D([0], [0],
                label=T_label,
@@ -443,8 +446,9 @@ if include_prx:
 
 leg1 = ax.legend(handles=legend_elements_emri,
                  loc='lower center', ncols=1,
-                 title=r'$(m_1, m_2)$ $[M_\odot]$', frameon=False, framealpha=1.0,
-                 fontsize=7, title_fontsize=7)
+                 bbox_to_anchor=(0.52, 0.0),
+                 title=r'$m_1[M_\odot], m_2[M_\odot], T[\mathrm{yr}]$', frameon=False, framealpha=1.0,
+                 fontsize=7, title_fontsize=6)
 ax.add_artist(leg1)
 
 # legend_elements_effects = [
