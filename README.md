@@ -32,20 +32,23 @@ We quantify LISA's capability to:
 
 ## Key Results
 
-Our analysis provides quantitative insights into LISA's EMRI/IMRI science capabilities across the full parameter space:
+Our analysis provides quantitative insights into LISA's EMRI/IMRI science capabilities across the following parameter space:
 
 <div align="center">
 
 ### Parameter Space Coverage
 ![Figure of Merit EMRI/IMRIs](pipeline/figures/emri_imri_masses_m1_m2.png)
+
 *EMRI and IMRI parameter space: primary vs secondary mass configurations*
 
 ### Detection Horizon
 ![Horizon Redshift EMRI/IMRIs](pipeline/figures/z_at_snr.png)
+
 *Maximum detection redshift as a function of system parameters*
 
 ### Parameter Estimation Precision
 ![FoM Precision EMRI/IMRIs](pipeline/figures/precision_m1_a_a_0.99_tpl_0.25.png)
+
 *Measurement precision across the mass parameter space*
 
 </div>
