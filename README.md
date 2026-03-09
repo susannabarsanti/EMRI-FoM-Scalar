@@ -55,109 +55,15 @@ Our analysis provides quantitative insights into LISA's EMRI/IMRI science capabi
 
 ---
 
-## Getting Started
-
-### Quick Start (No Installation)
-
-The easiest way to explore the analysis is through our [interactive Jupyter notebook](https://mybinder.org/v2/gh/lorenzsp/EMRI-FoM/main?filepath=pipeline/degradation_analysis.ipynb).
-
-### Local Installation
+## Reproducing this work
 
 To reproduce the full analysis pipeline on your own GPU-enabled system, follow the installation instructions below. The pipeline uses GPU acceleration for efficient waveform generation and Fisher matrix calculations.
 
-**Pre-built Container**: A ready-to-use Singularity container is available [here](https://public.spider.surfsara.nl/project/lisa_nlddpc/emri_fom_container/).
-
----
-
-## Installation with Conda
-
-### Prerequisites
-
-- CUDA-capable GPU with compute capability ≥ 7.0
-- CUDA Toolkit 12.x with `nvcc` compiler
-- [Anaconda](https://docs.anaconda.com/anaconda/install/) or Miniconda
-- Linux or macOS (Windows not currently supported due to compiler limitations)
-
-### Step 1: Create Environment and Install FEW
-
-[Fast EMRI Waveforms (FEW)](https://github.com/BlackHolePerturbationToolkit/FastEMRIWaveforms) provides GPU-accelerated waveform generation:
-
-```bash
-# Create environment with FEW
-conda create -n fom_env -c conda-forge -y --override-channels \
-    python=3.12 fastemriwaveforms-cuda12x
-
-# Activate environment
-conda activate fom_env
-
-# Install additional dependencies
-pip install tabulate markdown pypandoc scikit-learn healpy \
-    lisaanalysistools seaborn corner scipy tqdm jupyter \
-    ipython h5py requests matplotlib eryn Cython
-```
-
-**Test FEW installation:**
-```python
-import few
-few.get_backend("cuda12x")  # Should complete without errors
-```
-
-### Step 2: Install Fisher Information Package
-
-```bash
-cd StableEMRIFisher-package/
-pip install .
-cd ..
-```
-
-### Step 3: Install LISA Response (lisa-on-gpu)
-
-First, locate your CUDA compiler and add it to PATH:
-
-```bash
-# Find nvcc location (typically in /usr/local/cuda-*/bin/)
-export PATH=$PATH:/usr/local/cuda-12.5/bin/
-```
-
-Then install the response package:
-
-```bash
-cd lisa-on-gpu
-python setup.py install
-cd ..
-```
-
-**Verify installation:**
-```python
-from fastlisaresponse import ResponseWrapper  # Should import without errors
-```
-
-### Step 4: Test Installation
-
-Run the test suite:
-
-```bash
-# Test waveform and response
-python -m unittest test_waveform_and_response.py
-
-# Test pipeline with minimal configuration
-cd pipeline
-python pipeline.py --M 1e6 --mu 1e1 --a 0.5 --e_f 0.1 --T 4.0 --z 0.5 \
-    --psd_file TDI2_AE_psd.npy --dt 10.0 --use_gpu --N_montecarlo 1 \
-    --device 0 --power_law --repo test_acc --calculate_fisher 1
-```
-
-If all tests pass, your installation is complete! ✓
-
----
-
-## Container Installation (HPC Environments)
-
-For high-performance computing clusters, we provide Singularity container instructions. These are particularly useful for reproducibility and deployment on shared systems.
+**Pre-built Container**: A ready-to-use Singularity container is available [here](https://public.spider.surfsara.nl/project/lisa_nlddpc/emri_fom_container/). We also provide Singularity container instructions to create your own container below.
 
 ### Quick Start with Pre-built Container
 
-Download and use the ready-made container:
+Download and use the ready-made container [here](https://public.spider.surfsara.nl/project/lisa_nlddpc/emri_fom_container/):
 
 ```bash
 # Download container (if needed)
@@ -247,6 +153,88 @@ singularity build fom_final.sif fom
 
 ---
 
+## Installation with Conda
+
+### Prerequisites
+
+- CUDA-capable GPU with compute capability ≥ 7.0
+- CUDA Toolkit 12.x with `nvcc` compiler
+- [Anaconda](https://docs.anaconda.com/anaconda/install/) or Miniconda
+- Linux or macOS (Windows not currently supported due to compiler limitations)
+
+### Step 1: Create Environment and Install FEW
+
+[Fast EMRI Waveforms (FEW)](https://github.com/BlackHolePerturbationToolkit/FastEMRIWaveforms) provides GPU-accelerated waveform generation:
+
+```bash
+# Create environment with FEW
+conda create -n fom_env -c conda-forge -y --override-channels \
+    python=3.12 fastemriwaveforms-cuda12x
+
+# Activate environment
+conda activate fom_env
+
+# Install additional dependencies
+pip install tabulate markdown pypandoc scikit-learn healpy \
+    lisaanalysistools seaborn corner scipy tqdm jupyter \
+    ipython h5py requests matplotlib eryn Cython
+```
+
+**Test FEW installation:**
+```python
+import few
+few.get_backend("cuda12x")  # Should complete without errors
+```
+
+### Step 2: Install Fisher Information Package
+
+```bash
+cd StableEMRIFisher-package/
+pip install .
+cd ..
+```
+
+### Step 3: Install LISA Response (lisa-on-gpu)
+
+First, locate your CUDA compiler and add it to PATH:
+
+```bash
+# Find nvcc location (typically in /usr/local/cuda-*/bin/)
+export PATH=$PATH:/usr/local/cuda-12.5/bin/
+```
+
+Then install the response package:
+
+```bash
+cd lisa-on-gpu
+python setup.py install
+cd ..
+```
+
+**Verify installation:**
+```python
+from fastlisaresponse import ResponseWrapper  # Should import without errors
+```
+
+### Step 4: Test Installation
+
+Run the test suite:
+
+```bash
+# Test waveform and response
+python -m unittest test_waveform_and_response.py
+
+# Test pipeline with minimal configuration
+cd pipeline
+python pipeline.py --M 1e6 --mu 1e1 --a 0.5 --e_f 0.1 --T 4.0 --z 0.5 \
+    --psd_file TDI2_AE_psd.npy --dt 10.0 --use_gpu --N_montecarlo 1 \
+    --device 0 --power_law --repo test_acc --calculate_fisher 1
+```
+
+If all tests pass, your installation is complete! ✓
+
+---
+
 ## Alternative: Python Virtual Environment
 
 For systems without Singularity or conda, use a standard Python virtual environment:
@@ -318,12 +306,10 @@ If you use the electromagnetic observations presented in this work please read t
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the Apache License - see the LICENSE file for details.
 
 ## Contact
 
 For questions or support, please open an issue on GitHub or contact the maintainers.
 
 ---
-
-*Developed for the LISA mission - Opening new windows on the universe through gravitational waves*
