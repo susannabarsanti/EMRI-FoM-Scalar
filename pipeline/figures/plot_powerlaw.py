@@ -407,15 +407,12 @@ ax.annotate('GW230529', xy=(n_r_dipole + 0.2, A_GW230529 * 0.3),
 # -----------------------------------------------------------------------------
 # Susi's points
 # -----------------------------------------------------------------------------
-# \sus{My dots are:\\
-# -$(10^6,100)$: $\sigma_A
-# =5.57{}^{+3.24}_{-2.01}\times10^{-6}$\\
-# -$(10^6,10)$: $\sigma_A
-# =5.48{}^{+3.24}_{-1.92}\times10^{-6}$\\
-# -$(10^5,10)$: $\sigma_A
-# =1.59{}^{+0.85}_{-0.56}\times10^{-6}$}
-ax.errorbar([0.8], [5.57e-6], yerr=[[5.57e-6-2.01e-6], [5.57e-6+3.24e-6]], fmt='x', color=styles[(1000000.0, 100.0)]['color'], markersize=5, zorder=10, alpha=0.7)
-ax.errorbar([0.8], [1.59e-6], yerr=[[1.59e-6-0.56e-6], [1.59e-6+0.85e-6]], fmt='x', color=styles[(100000.0, 10.0)]['color'], markersize=5, label='Full model', zorder=10, alpha=0.7)
+# 4th order derivative
+# ax.errorbar([0.8], [5.57e-6], yerr=[[5.57e-6-2.01e-6], [5.57e-6+3.24e-6]], fmt='x', color=styles[(1000000.0, 100.0)]['color'], markersize=5, zorder=10, alpha=0.7)
+# ax.errorbar([0.8], [1.59e-6], yerr=[[1.59e-6-0.56e-6], [1.59e-6+0.85e-6]], fmt='x', color=styles[(100000.0, 10.0)]['color'], markersize=5, label='Full model', zorder=10, alpha=0.7)
+# 8th order
+# ax.errorbar([0.8], [5.57e-6], yerr=[[5.57e-6-2.01e-6], [5.57e-6+3.24e-6]], fmt='x', color=styles[(1000000.0, 100.0)]['color'], markersize=5, zorder=10, alpha=0.7)
+# ax.errorbar([0.8], [1.59e-6], yerr=[[1.59e-6-0.56e-6], [1.59e-6+0.85e-6]], fmt='x', color=styles[(100000.0, 10.0)]['color'], markersize=5, label='Full model', zorder=10, alpha=0.7)
 # arrow to relativistic model
 ax.annotate('', xy=(0.7, 0.3e-5), xytext=(-1, 1e-6), arrowprops=dict(arrowstyle='->', color='black', lw=0.8))
 ax.annotate('Relativistic \n Model $\\times$', xy=(0.7, 1e-5),xytext=(-0.5, 1e-7),fontsize=6, color='black', ha='center', va='bottom')
