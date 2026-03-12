@@ -52,6 +52,7 @@ mone = 1e6
 mtwo = 1.0
 MergerRate = get_merger_rate(mone, mtwo)
 print("Merger Rate", MergerRate ,"Gpc^-3 yr^-1") # in agreement with Table 2 of the paper https://arxiv.org/pdf/gr-qc/0405137
+breakpoint()
 fiducial_distance = 1.0
 snr_thr = 30.0
 snr_test = 20
