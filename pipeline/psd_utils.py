@@ -286,8 +286,8 @@ if __name__ == "__main__":
     freqs = np.logspace(np.log10(5e-5), 0.0, 1000)
     plt.figure()
     plt.loglog(freqs, psd_nominal(freqs), label="Instrumental", linewidth=1.)
-    plt.loglog(freqs, psd_emri_1p5(freqs), "--", label="FoM 1.5 yr", linewidth=1.)
-    plt.loglog(freqs, psd_emri_4p5(freqs), "-.",label="FoM 4.5 yr", linewidth=1.)
+    plt.loglog(freqs, psd_emri_1p5(freqs), "--", label="1.5 yr", linewidth=1.)
+    plt.loglog(freqs, psd_emri_4p5(freqs), "-.",label="4.5 yr", linewidth=1.)
     freqs = np.logspace(np.log10(1e-2), 0.0, 1000)
 
     plt.loglog(freqs, psd_smoothed(freqs), "--", label="Smoothing", linewidth=1.)

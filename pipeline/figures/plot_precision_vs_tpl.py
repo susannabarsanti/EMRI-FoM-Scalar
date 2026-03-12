@@ -48,7 +48,7 @@ ylabel_map = {
     "relative_precision_e0": r"$\sigma_{e_0}/e_0$",
     "absolute_precision_a": r"$\sigma_{a}$",
     "relative_precision_a": r"$\sigma_{a}/a$",
-    "absolute_precision_OmegaS": r"Sky Localization $\Delta \Omega_S [\mathrm{deg}^2]$",
+    "absolute_precision_OmegaS": r"$\Delta \Omega_S [\mathrm{deg}^2]$",
     "snr": "SNR",
 }
 
@@ -415,7 +415,7 @@ combined_metrics = ["relative_precision_m1_det", "relative_precision_m2_det"]
 linestyles = ['-', '--', ':']
 
 # Create the plot
-fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, 1, figsize=(3.25, 4*2.0), sharex=True)
+fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, 1, figsize=(3.25, 6.0), sharex=True)
 
 axes = [ax1, ax2, ax3, ax4, ax5]
 metric_names = ["redshift", "combined", "relative_precision_a", "absolute_precision_OmegaS", "relative_precision_dist"]
@@ -445,7 +445,7 @@ for i, (ax, metric) in enumerate(zip(axes, metric_names)):
             ax.plot(tpl_sorted, redshift_sorted, 'o-', color=m2_to_color[m2],
                     markersize=5, linewidth=1.5, label=f'{m2:.0f}', alpha=0.8)
         
-        ax.set_ylabel(r"Redshift at $\mathrm{SNR}=30$")
+        ax.set_ylabel(r"Redshift at $\mathrm{SNR}=30$", fontsize=8)
         ax.grid(True, alpha=0.3)
         ax.set_yscale('log')
         ax.legend(title=r'Secondary mass $m_2 [M_\odot]$', bbox_to_anchor=(0.5, 1.02), loc='lower center', ncols=5)
@@ -473,14 +473,14 @@ for i, (ax, metric) in enumerate(zip(axes, metric_names)):
                 ax.plot(tpl_sorted, precision_sorted, linestyle=linestyles[j], marker=marker, color=m2_to_color[m2],
                         markersize=markersize, linewidth=1.5, alpha=0.8)
         
-        ax.set_ylabel(r"Relative Precision")
+        ax.set_ylabel(r"$\sigma_\theta / \theta$")
         ax.grid(True, alpha=0.3)
         ax.set_yscale('log')
         
         # Legend for metrics
         
         legend_elements = [Line2D([0], [0], linestyle=ls, marker='o',markersize=6 if met == "relative_precision_m1_det" else 3, color='black', label=ylabel_map[met]) for ls, met in zip(linestyles, combined_metrics)]
-        ax.legend(handles=legend_elements, loc='upper right', ncols=1, frameon=True)
+        ax.legend(handles=legend_elements, loc='upper right', ncols=1, frameon=False)
     else:
         for m2 in sorted(precision_vs_tpl_data[metric].keys()):
             if m2_filter != 'all' and m2 != m2_filter:
